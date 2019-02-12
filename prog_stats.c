@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/09 18:47:34 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/12 11:33:09 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/12 12:04:30 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,22 +81,35 @@
    }*/
 
 
-void	ft_print_dir(DIR *dirhandle, t_options option)
+void	ft_print_dir(char *dir_name, t_options option)
 {
+	DIR 			*dirhandle;
+	DIR 			*dir_nested;
+	char			*str;
 	struct stat		sb;
 	struct dirent	*dirdata;
 
+	if (!(dirhandle = opendir(dir_name)))
+		return ;
 	while ((dirdata = readdir(dirhandle)))
 	{
 		if ((option.a) || *(dirdata->d_name) != '.')
 		{
 			printf("%s\n", dirdata->d_name);
-			if (dirdata->d_type == DT_REG)
-				printf("Type de fichier :                  f\n");
+//			if (dirdata->d_type == DT_REG) 
+//				printf("Type de fichier :                  f\n");
 			if (dirdata->d_type == DT_DIR)
 			{
-				printf("Type de fichier :                  dir\n");
-			
+			//	printf("Type de fichier :                  dir\n");
+				
+			//	printf("%d\n", option.R);
+				if ((option.R))
+				{
+					str = ft_strdup(dir_name);
+					ft_strcat(str, "/");
+					ft_strcat(str, dirdata->d_name);
+					ft_print_dir(str, option);
+				}
 			}
 			if (dirdata->d_type == DT_FIFO)
 				printf("Type de fichier :                  Fifo\n");
@@ -131,19 +144,15 @@ void	ft_print_dir(DIR *dirhandle, t_options option)
 			printf("Dernière modification du fichier:  %s", ctime(&sb.st_mtime));
 		}
 	}
+	closedir(dirhandle);
 }
 
 int		main(int ac, char **av)
 {
-	DIR 			*dirhandle;
 	t_options		option;
 
 	ft_option(ac, av, &option);
 	printf("%d\n", option.a);
-	if (!(dirhandle = opendir(".")))
-		return (0);
-   	ft_print_dir(dirhandle, option);
-	printf("opendir_reussite\n");
-	closedir(dirhandle);
+   	ft_print_dir(".", option);
 	return (0);
 }
