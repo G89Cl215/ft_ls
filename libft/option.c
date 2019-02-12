@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/17 16:50:46 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/02/10 18:40:23 by baavril          ###   ########.fr       */
+/*   Updated: 2019/02/12 10:52:29 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int		ft_usage(char *arg)
 	return (0);
 }
 
-int		ft_option(char *arg, t_options *options)
+int		ft_fill_option(char *arg, t_options *options)
 {
 	arg++;
 	while (*arg && ft_isin(*arg, OPT))
@@ -54,7 +54,7 @@ int		ft_option(char *arg, t_options *options)
 	return (1);
 }
 
-int		option(int ac, char **av, t_options *options)
+int		ft_option(int ac, char **av, t_options *options)
 {
 	int		i;
 
@@ -62,7 +62,7 @@ int		option(int ac, char **av, t_options *options)
 	while (i < ac)
 	{
 		if (av[i][0] == '-')
-			ft_option(av[i], options);
+			ft_fill_option(av[i], options);
 		i++;
 	}
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/04 11:43:46 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/11 16:48:04 by baavril          ###   ########.fr       */
+/*   Updated: 2019/02/12 10:34:36 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,8 @@
 /*
 ** I. The options that we have to do.
 ** 
-**	-l : (The lowercase letter ``ell''.)  List in long format.
-**		If the output is to a terminal, a total sum for all the file sizes is
-**		output on a line before the long listing.
+**	-l : List in long format. If the output is to a terminal, a total sum for
+** all the file sizes is output on a line before the long listing.
 **
 **	-R : Recursively list subdirectories encountered.
 **

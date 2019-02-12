@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/06 18:40:46 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/02/11 14:55:33 by baavril          ###   ########.fr       */
+/*   Updated: 2019/02/12 10:51:02 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,6 @@ t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 void				ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 void				ft_lstadd_back(t_list **alst, t_list *new_back);
 int					get_next_line(const int fd, char **line);
-int					option(int ac, char **av, t_options *options);
+int					ft_option(int ac, char **av, t_options *options);
 
 #endif

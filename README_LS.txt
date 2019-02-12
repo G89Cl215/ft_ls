@@ -6,7 +6,7 @@
 #    By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/02/06 18:29:58 by tgouedar          #+#    #+#              #
-#    Updated: 2019/02/11 20:56:53 by tgouedar         ###   ########.fr        #
+#    Updated: 2019/02/12 10:50:04 by tgouedar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 
 Sans ordre significatif...
 
--=-=-	I. opendir/readdir/closedir		-=-=-
+			-=-=-	I. opendir/readdir/closedir		-=-=-
 
 #include <dirent.h>
 
@@ -24,6 +24,11 @@ defines the following
 > ino_t		a type used for file serial numbers.
 typedef ulong_t		ino_t;
 
+dev_t
+
+mode_t 
+
+nlink_t
 
 a)	The dirent struct
 
@@ -38,6 +43,49 @@ __uint8_t	d_type;              /* file type, see below */
 __uint8_t   d_namlen;            /* length of string in d_name */
 char    	d_name[255 + 1];     /* name must be no longer than this */
 }
+
+d_type can display :
+-DT_UNKNOWN
+	The type is unknown. Only some filesystems have full support to return the
+type of the file, others might always return this value.
+-DT_REG
+	A regular file.
+-DT_DIR
+	A directory.
+-DT_FIFO
+	A named pipe, or FIFO. See FIFO Special Files.
+-DT_SOCK
+	A local-domain socket.
+-DT_CHR
+	A character device.
+-DT_BLK
+	A block device.
+-DT_LNK
+	A symbolic link.
+
+Tips found on stack overflow :
+(d_type is a speed optimization to save on lstat(2) calls, when it's supported.
+
+As the readdir(3) man page points out, not all filesystems return real info
+in the d_type field (typically because it would take an extra disk seek to read
+the inode. Filesystems that always set DT_UNKNOWN are common in real life, and
+not something that you can ignore.
+
+You always need code that will fall back to using lstat(2) if
+d_type==DT_UNKNOWN, if the filename alone isn't enough to decide it's
+uninteresting. (This is the case for some callers, like find -name or expanding
+globs like *.c, which is why readdir doesn't incur the overhead of filling it
+in if it would take an extra disk read.)
+
+The Linux getdents(2) man page has an example program that does what you're
+trying to do, including a chained-ternary-operator block to decode the d_type
+field into text strings. (As the other answers point out, your mistake is
+printing it out as an character, rather than comparing it against DT_REG,
+DT_DIR, etc.)
+
+To be portable, your code needs to check that struct dirent even HAS a d_type
+field, if you use it, or your code won't even compile outside of GNU and BSD
+systems. (see readdir(3)))
 
 a)	DIR		*opendir(const char *filename);
 
@@ -63,7 +111,7 @@ On failure, -1 is returned and the global variable errno is set to indicate the
 error.
 
 
--=-=-	II. stat/lstat		-=-=-
+				-=-=-	II. stat/lstat		-=-=-
 
 #include <sys/stat.h>
 
@@ -76,21 +124,21 @@ The stat structure is defined as:
 
 struct stat
 {
-dev_t    			st_dev;    /* device inode resides on */
-ino_t    			st_ino;    /* inode's number */
-mode_t   			st_mode;   /* inode protection mode */
-nlink_t  			st_nlink;  /* number of hard links to the file */
-uid_t    			st_uid;    /* user-id of owner */
-gid_t    			st_gid;    /* group-id of owner */
-dev_t    			st_rdev;   /* device type, for special file inode */
-struct timespec 	st_atimespec;  /* time of last access */
-struct timespec 	st_mtimespec;  /* time of last data modification */
-struct timespec 	st_ctimespec;  /* time of last file status change */
-off_t    			st_size;   /* file size, in bytes */
-quad_t   			st_blocks; /* blocks allocated for file */
-u_long   			st_blksize;/* optimal file sys I/O ops blocksize */
-u_long   			st_flags;  /* user defined flags for file */
-u_long   			st_gen;    /* file generation number */
+dev_t    			st_dev;			/* device inode resides on */
+ino_t    			st_ino;			/* inode's number */
+mode_t   			st_mode;		/* inode protection mode */
+nlink_t  			st_nlink;		/* number of hard links to the file */
+uid_t    			st_uid;			/* user-id of owner */
+gid_t    			st_gid;			/* group-id of owner */
+dev_t    			st_rdev;		/* device type, for special file inode */
+struct timespec 	st_atimespec;	/* time of last access */
+struct timespec 	st_mtimespec;	/* time of last data modification */
+struct timespec 	st_ctimespec;	/* time of last file status change */
+off_t    			st_size;		/* file size, in bytes */
+quad_t   			st_blocks;		/* blocks allocated for file */
+u_long   			st_blksize;		/* optimal file sys I/O ops blocksize */
+u_long   			st_flags;		/* user defined flags for file */
+u_long   			st_gen;			/* file generation number */
 };
 
 
@@ -113,7 +161,8 @@ is the length of the contents of the symbolic link, and does not count any
 trailing null.
 
 
--=-=-	III. getpwuid/getgrgid		-=-=-
+
+			-=-=-	III. getpwuid/getgrgid		-=-=-
 
 
 #include <uuid/uuid.h>
@@ -203,6 +252,11 @@ data that the calling application expects to find as a result of its own calls
 to these routines. Library and framework code should use the alternative
 reentrant variants detailed below.
 
+getpwuid() returnes a valid pointer to a passwd structure on success or NULL if
+the entry is not found or if an error occurs. If an error does occur, errno will
+be set. Note that programs must explicitly set errno to zero before calling any
+of these functions if they need to distinguish between a non-existent entry and
+an error.
 
 c)	The group struct
 
@@ -243,14 +297,9 @@ set.  Note that programs must explicitly set errno to zero before calling any
 of these functions if they need to distinguish between a non-existent entry and
 an error.
 
-getpwuid() returnes a valid pointer to a passwd structure on success or NULL if
-the entry is not found or if an error occurs. If an error does occur, errno will
-be set. Note that programs must explicitly set errno to zero before calling any
-of these functions if they need to distinguish between a non-existent entry and
-an error.
 
 
--=-=-	IV. time/ctime		-=-=-
+					-=-=-	IV. time/ctime		-=-=-
 
 #include <time.h>
 
@@ -280,7 +329,8 @@ djusts this time value for the current time zone. It returns a pointer to a
 All of the fields have constant width.
 
 
--=-=-	V. readlink		-=-=-
+
+						-=-=-	V. readlink		-=-=-
 
 #include <unistd.h>
 
@@ -291,7 +341,7 @@ ssize_t
 which has size bufsize. Readlink does not append a NUL character to buf.
 
 
--=-=-	VI. perror/sterror		-=-=-
+				-=-=-	VI. perror/sterror		-=-=-
 
 
 	The strerror(), and perror() functions look up the error message string
@@ -321,5 +371,6 @@ extern const int			sys_nerr;
 
 	strerror() returns EINVAL as a warning. Error numbers recognized by this
 implementation fall in the range 0 <= errnum < sys_nerr.
+
 
 -=-=-	VII. errno		-=-=-
