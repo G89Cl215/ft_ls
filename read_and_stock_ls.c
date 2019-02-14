@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 11:27:06 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/02/14 09:46:09 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/14 13:26:31 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,10 +114,9 @@ t_list		*ft_read_stock_dir(char *dir_name, t_options option)
 			return (NULL);
 		if (!(dir_list))
 			dir_list = to_sort;
-		else if (!(option.t))
-			ft_sortins_ascii(&dir_list, to_sort, flag);
 		else
-			ft_sortins_time(&dir_list, to_sort, flag);
+			(option.t) ? ft_sortins_time(&dir_list, to_sort, flag) :
+				ft_sortins_ascii(&dir_list, to_sort, flag);
 	}
 	closedir(dirhandle);
 	return (dir_list);
