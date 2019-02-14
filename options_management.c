@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/11 16:42:56 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/12 08:18:09 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/14 07:19:24 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,40 +19,52 @@
 #include "ft_ls.h"
 #include "libft/libft.h"
 
-
-t_list	*ft_list_sort(t_list *dir_list)
+int		ft_print_new_dir(char *dir_name, t_list * voyager, t_options option)
 {
-	t_list *voyager;
-	void	*tmp;
+	size_t	len_dir;
+	size_t	len_add;
+	char	*str;
 
-	voyager = dir_list;
-	while (dir_list->next != NULL)
-	{
-		if (ft_strcmp((char*)(dir_list->content),
-		(char*)(dir_list->next->content)) > 0)
-		{
-			tmp = dir_list->content;
-			dir_list->content = dir_list->next->content;
-			dir_list->next->content = tmp;
-			dir_list = voyager;
-		}
-		else
-			dir_list = dir_list->next;
-	}
-	dir_list = voyager;
-	return (dir_list);
+	len_dir = ft_strlen(dir_name);
+    len_add = ft_strlen(((struct dirent*)(voyager->content))->d_name);
+	printf("\n%s/%s:\n", dir_name, ((struct dirent*)(voyager->content))->d_name);
+	if (!(str = (char*)malloc(len_add + len_dir + 2)))
+		return (0);
+	str[0] = '\0';
+	ft_strcat(str, dir_name);
+	ft_strcat(str, "/");
+	ft_strcat(str, ((struct dirent*)(voyager->content))->d_name);
+	str[len_dir + len_add + 1] = '\0';
+	dir_management(str, option);
+	free(str);
+	return (1);
 }
 
-void	option_a(t_list *dir_list)
+int		ft_current(t_list **dir_list, char *dir_name, t_options option)
 {
-	t_list *voyager;
+	t_list	*voyager;
 
-	voyager = ft_list_sort(dir_list);
+	voyager = *dir_list;
 	while (voyager)
 	{
-		printf("%s\n", (char*)voyager->content);
+		if ((option.a)
+		|| *(((struct dirent*)(voyager->content))->d_name) != '.')
+			printf("%s\n", ((struct dirent*)(voyager->content))->d_name);
 		voyager = voyager->next;
 	}
+	if (option.R)
+	{
+		voyager = *dir_list;
+		while (voyager)
+		{
+			if ((((struct dirent*)(voyager->content))->d_type == DT_DIR)
+			&& (ft_strcmp(((struct dirent*)(voyager->content))->d_name, "."))
+			&& (ft_strcmp(((struct dirent*)(voyager->content))->d_name, ".."))
+			&& (((option.a)
+			|| *(((struct dirent*)(voyager->content))->d_name) != '.')))
+				ft_print_new_dir(dir_name, voyager, option);
+			voyager = voyager->next;
+		}
+	}
+	return (1);
 }
-
-

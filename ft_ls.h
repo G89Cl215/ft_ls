@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/04 11:43:46 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/12 10:34:36 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/14 04:04:36 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,20 @@
 **
 */
 
-t_list	*ft_list_sort(t_list *dir_list);
+t_list		*ft_stock_dir(struct dirent *dp, DIR *dir, t_list *buff_list);
+int			ft_current(t_list **dir_list, char *dir_name, t_options option);
+t_list		*ft_parsing_dir(char **tab_dir);
+t_list		*ft_stock_dir(struct dirent *dp, DIR *dir, t_list *buff_list);
+int			dir_management(char *dir_name, t_options options);
+int			ft_central_opt_management(t_list *dir_list, t_options options);
+t_list		*ft_read_stock_dir(char *dir_name, t_options option);
+void		ft_sortins_time(t_list **lst_start, t_list *to_sort, int flag);
+void		ft_sortins_ascii(t_list **lst_start, t_list *to_sort, int flag);
 
-void	option_a(t_list *dir_list);
+
+
+
+
 
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 11:27:06 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/02/13 16:22:07 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/14 06:01:37 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void		ft_sortins_time(t_list **lst_start, t_list *to_sort, int flag)
 	else
 	{
 		if (stat(((struct dirent*)(to_sort->content))->d_name, &sb_sort) == -1
-	|| stat(((struct dirent*)((*lst_start)->content))->d_name, &sb) == -1)
+		|| stat(((struct dirent*)((*lst_start)->content))->d_name, &sb) == -1)
 		{
 			perror("stat");
 			exit(EXIT_SUCCESS);
@@ -98,8 +98,8 @@ void		ft_sortins_time(t_list **lst_start, t_list *to_sort, int flag)
 		name_sort = ((struct dirent*)(to_sort->content))->d_name;
 		name_cur = ((struct dirent*)(voyager->content))->d_name;
 		while ((voyager->next)
-		&& (sb.st_mtimespec).tv_sec == (sb_sort.st_mtimespec).tv_sec
-		&& (flag * ft_strcmp(name_cur, name_sort)) >= 0)
+		&& ((sb.st_mtimespec).tv_sec == (sb_sort.st_mtimespec).tv_sec)
+		&& ((flag * ft_strcmp(name_cur, name_sort)) < 0))
 		{
 			if (stat(((struct dirent*)((voyager->next)->content))->d_name, &sb) == -1)
 			{
@@ -135,5 +135,6 @@ t_list		*ft_read_stock_dir(char *dir_name, t_options option)
 		else
 			ft_sortins_time(&dir_list, to_sort, flag);
 	}
+	closedir(dirhandle);
 	return (dir_list);
 }

@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/09 19:08:33 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/12 08:18:10 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/14 06:02:47 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,56 +19,18 @@
 #include "ft_ls.h"
 #include "libft/libft.h"
 
-t_list	*ft_stock_dir(struct dirent *dp, DIR *dir, t_list *buff_list)
-{
-	t_list	*dir_list;
-	t_list	*new_nod;
-
-	if (!(dir_list = (t_list*)malloc(sizeof(t_list))))
-		return (NULL);
-	dir_list = NULL;
-	while ((dp = readdir(dir)))
-	{
-		if (!(new_nod = ft_lstnew(dp->d_name, ft_strlen(dp->d_name) + 1)))
-			return (NULL);
-		ft_lstadd_back(&dir_list, new_nod);
-	}
-	return (dir_list);
-}
-
 int	main(int argc, char **argv)
 {
-	DIR *dir;
-	struct dirent *dp;
-	int i;
 	t_options	options;
-	t_list	*buff_list;
-	t_list	*dir_list;
+	t_list		*parsing_list;
 
-	i = 1;	
-	if (!(buff_list = (t_list*)malloc(sizeof(t_list))))
-		return (0);
-	buff_list = NULL;
-	if (option(argc, argv, &options) == 1)	
+	ft_option(argc, argv, &options);
+	if (!(parsing_list = ft_parsing_dir(argv)))
+		dir_management(".", options);
+	while (parsing_list)
 	{
-		while (argc >= i)
-		{
-			if ((dir = opendir(argv[i])))
-			{	
-				if (!(dir_list = ft_stock_dir(dp, dir, buff_list)))
-					return (0);
-				if (options.a == 1)
-					option_a(dir_list);
-			//	if (options.R == 1)
-			//		option_R(dir_list);
-			}
-			i++;
-		}
-	}
-	else
-	{
-		closedir(dir);
-		return (0);
+		dir_management(parsing_list->content, options);
+		parsing_list = parsing_list->next;
 	}
 	return (0);
 }
