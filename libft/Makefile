@@ -6,7 +6,7 @@
 #    By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/05 22:11:12 by tgouedar          #+#    #+#              #
-#    Updated: 2019/02/09 15:35:14 by baavril          ###   ########.fr        #
+#    Updated: 2019/02/13 13:17:23 by tgouedar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@ CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra
 
 SRCFILE	= ft_swap.c\
+		  ft_swaptr.c\
 		  ft_btw.c\
 		  ft_bzero.c\
 		  ft_memset.c\

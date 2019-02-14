@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/06 18:40:46 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/02/12 10:51:02 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/13 14:54:57 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ typedef struct		s_list
 }					t_list;
 
 void				ft_swap(int *a, int *b);
+int					ft_swaptr(void **a, void **b);
 int					ft_btw(int test, int min, int max);
 void				*ft_memset(void *b, int c, size_t len);
 void				ft_bzero(void *s, size_t n);

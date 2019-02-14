@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/17 16:50:46 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/02/12 10:52:29 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/14 08:51:53 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,11 @@ int		ft_option(int ac, char **av, t_options *options)
 	int		i;
 
 	i = 1;
+	options->t = 0;
+	options->r = 0;
+	options->R = 0;
+	options->l = 0;
+	options->a = 0;
 	while (i < ac)
 	{
 		if (av[i][0] == '-')

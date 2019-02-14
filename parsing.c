@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 12:23:17 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/14 04:04:22 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/14 08:57:58 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,11 @@ t_list		*ft_parsing_dir(char **tab_dir)
 
 	j = 0;
 	i = 1;
-	if (!(list_dir = (t_list*)malloc(sizeof(t_list))))
-		return (NULL);
 	list_dir = NULL;
 	if (tab_dir[i] == NULL)
 		return (NULL);
 	while (tab_dir[i])
 	{
-		if (tab_dir[i][0] == '-')
-			i++;
-		if (tab_dir[i] == NULL)
-			return (NULL);
 		if (tab_dir[i][0] != '-')
 		{
 			if (!(new_nod = ft_lstnew(tab_dir[i], ft_strlen(tab_dir[i]) + 1)))
@@ -52,10 +46,9 @@ t_list		*ft_parsing_dir(char **tab_dir)
 
 int		dir_management(char *dir_name, t_options options)
 {
-	DIR				*dir;
 	t_list			*dir_list;
-	struct dirent	*dp;
-	
+
+	dir_list =NULL;	
 	if (!(dir_list = ft_read_stock_dir(dir_name, options)))
 		return (0);	
 	ft_current(&dir_list, dir_name, options);
