@@ -6,7 +6,7 @@
 #    By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/05 22:11:12 by tgouedar          #+#    #+#              #
-#    Updated: 2019/02/13 13:17:23 by tgouedar         ###   ########.fr        #
+#    Updated: 2019/02/16 21:46:15 by tgouedar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,6 @@ CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra
 
 SRCFILE	= ft_swap.c\
-		  ft_swaptr.c\
 		  ft_btw.c\
 		  ft_bzero.c\
 		  ft_memset.c\
@@ -93,6 +92,7 @@ SRCFILE	= ft_swap.c\
 		  ft_lstadd_back.c\
 		  get_next_line.c\
 		  option.c\
+		  match.c
 
 SRCDIR	= ./
 SRC		= $(addprefix $(SRCDIR),$(SRCFILE))
