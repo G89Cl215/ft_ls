@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/11 16:42:56 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/17 02:09:18 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/18 17:59:12 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int		ft_print_new_dir(char *dir_name, char *next_dir, t_options option)
 	char	*str;
 
 	len_dir = ft_strlen(dir_name);
-	len_add = ft_strlen(next_dir) - (len_dir) ? 0 : 1;
+	len_add = ft_strlen(next_dir) - ((len_dir) ? 0 : 1);
 	if (!(str = (char*)malloc(len_add + len_dir + 2)))
 		return (0);
 	str[0] = '\0';

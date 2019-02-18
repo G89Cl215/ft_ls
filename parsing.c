@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 12:23:17 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/17 02:09:19 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/18 17:56:34 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int			ft_parsing_dir(char **tab_dir, t_options option, t_list **dir_list)
 				(option.t) ? ft_sortins_time(&file_list, new_nod, flag)
 					: ft_sortins_ascii(&file_list, new_nod, flag);
 		}
-		else
+		else if ((type))
 		{
 			if (!(*dir_list))
 				*dir_list = new_nod;
