@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/04 11:43:46 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/17 02:09:20 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/20 20:49:55 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,21 +52,32 @@
 **
 */
 
-t_list		*ft_stock_dir(struct dirent *dp, DIR *dir, t_list *buff_list);
-int			ft_current(t_list **dir_list, char *dir_name, t_options option);
-int			ft_parsing_dir(char **tab_dir, t_options option, t_list **dir_list);
-t_list		*ft_stock_dir(struct dirent *dp, DIR *dir, t_list *buff_list);
-int			dir_management(char *dir_name, t_options options, int flag);
-int			ft_central_opt_management(t_list *dir_list, t_options options);
-t_list		*ft_read_stock_dir(char *dir_name, t_options option);
-void		ft_sortins_time(t_list **lst_start, t_list *to_sort, int flag);
-void		ft_sortins_ascii(t_list **lst_start, t_list *to_sort, int flag);
-void		ft_longdisplay(t_list *voyager);
+typedef struct	s_chained_file
+{
+	struct dirent			*filedata;
+	char					*path;
+	struct s_chained_file	*next;
+}				t_flist;
+
+t_flist		*ft_read_stock_dir(char *dir_name, t_options option);
+t_flist		*ft_stock_dir(struct dirent *dp, DIR *dir, t_flist *buff_list);
+t_flist		*ft_create_new_nod(char *path, struct dirent *filedata);
+void		ft_sortins(t_flist *new_nod, t_flist **dir_list, t_options option);
+void		ft_sortins_time(t_flist **lst_start, t_flist *to_sort, int flag);
+void		ft_sortins_ascii(t_flist **lst_start, t_flist *to_sort, int flag);
+int			ft_current(t_flist **dir_list, char *dir_name, t_options option);
+int			ft_parsing_dir(char **av, t_options option, t_flist **dir_list);
+int			dir_management(char *to_print, t_options options, int flag);
+int			ft_central_opt_management(t_flist *dir_list, t_options options);
+void		ft_display_file(t_flist *voyager, t_options option);
+void		ft_longdisplay(t_flist *voyager);
 int			ft_print_new_dir(char *dir_name, char *next_dir, t_options option);
 
-
-
-
+void		ft_get_stats(t_flist *voyager,  struct stat *file_stat);
+void		ft_get_chmod(struct stat sb);
+void		ft_get_file_type(char *buf, struct stat sb);
+int			ft_get_passwd(void);
+void		ft_get_group_name(struct stat sb);
 
 
 #endif

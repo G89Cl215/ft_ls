@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 12:23:17 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/18 17:56:34 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/20 22:41:48 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,36 +19,23 @@
 #include "ft_ls.h"
 #include "libft/libft.h"
 
-void			ft_display_file(t_list *voyager, t_options option)
+uint8_t	ft_gettype(char *to_parse, struct dirent **filedata)
 {
-	char		*file;
-
-	if (voyager->content)
-	{
-		file = ((struct dirent*)(voyager->content))->d_name;
-		if ((option.a) || *file != '.')
-			(option.l) ? ft_longdisplay(voyager) : printf("%s\n", file);
-	}
-	//gestion de sortie d'erreur :file not found
-	//else
-}
-
-uint8_t		ft_gettype(char *path, struct dirent **filedata)
-{
-
+	char			*path;
 	char			*file_name;
 	DIR				*dirhandle;
 
 	*filedata = NULL;
-	if (!(file_name = ft_strrchr(path, (int)('/'))))
+	if (!(file_name = ft_strrchr(to_parse, '/')))
 	{
-		file_name = path;
+		file_name = to_parse;
 		path = ".";
 	}
 	else
 	{
 		*file_name = '\0';
 		file_name++;
+		path = (*to_parse) ? to_parse : "/";
 	}
 	if (!(dirhandle = opendir(path)))
 		return (0);
@@ -57,66 +44,86 @@ uint8_t		ft_gettype(char *path, struct dirent **filedata)
 		if (!(ft_strcmp(file_name, (*filedata)->d_name)))
 		{
 			closedir(dirhandle);
+			if ((*filedata)->d_type == DT_DIR && file_name != to_parse)
+				*(--file_name) = '/';
 			return ((*filedata)->d_type);
 		}
 	}
-	closedir(dirhandle);
+	closedir(dirhandle); //ici : gestion plus fine des erreurs, sinon on affiche le dossier courant :/
 	return (0);
 }
 
-int			ft_parsing_dir(char **tab_dir, t_options option, t_list **dir_list)
+void	ft_verif_slash(char *dir_name)
 {
-	struct dirent	*dirdata;
-	t_list			*file_list;
-	t_list			*new_nod;
-	int				i;
-	int 			flag;
-	uint8_t			type;
+	int		len;
 
-	i = 1;
-	file_list = NULL;
-	flag = (option.r) ? -1 : 1;
-	if (!(tab_dir[i]))
-		return (0);
-	while (tab_dir[i])
-	{
-		type = ft_gettype(tab_dir[i], &dirdata);
-		if (!(new_nod = ft_lstnew(dirdata, sizeof(*dirdata))))
-			return (0);
-		if (type == DT_REG)
-		{
-			if (!(file_list))
-				file_list = new_nod;
-			else
-				(option.t) ? ft_sortins_time(&file_list, new_nod, flag)
-					: ft_sortins_ascii(&file_list, new_nod, flag);
-		}
-		else if ((type))
-		{
-			if (!(*dir_list))
-				*dir_list = new_nod;
-			else
-				(option.t) ? ft_sortins_time(dir_list, new_nod, flag)
-					: ft_sortins_ascii(dir_list, new_nod, flag);
-		}
-		i++;
-	}
-	flag = (*dir_list && (*dir_list)->next);
-	flag = ((file_list)) ? 2 : flag;
-	while (file_list)
-	{
-		new_nod = file_list;
-		file_list = file_list->next;
-		ft_display_file(new_nod, option);
-		free(new_nod->content);
-		free(new_nod);
-	}
-	return (flag);
+	len = ft_strlen(dir_name) - 1;
+	if (dir_name[len] == '/')
+		dir_name[len] = '\0';
 }
 
-int				dir_management(char *dir_name, t_options options, int flag)
+void	ft_parsing_display(t_flist *file_list, t_options option)
 {
-	t_list	*dir_list;
+	t_flist	*tmp;
+
+	while (file_list)
+	{
+		tmp = file_list;
+		file_list = file_list->next;
+		ft_display_file(tmp, option);
+		free(tmp->path);
+		free(tmp->filedata);
+		free(tmp);
+	}
+}
+t_flist		*ft_create_new_nod(char *path, struct dirent *filedata)
+{
+	t_flist	*new_nod;
+
+	if (!(new_nod = (t_flist*)malloc(sizeof(t_flist))))
+		return (NULL);
+	if (filedata->d_type == DT_DIR || ft_strcmp(path, filedata->d_name))
+	{
+		if (!(new_nod->path = strdup(path)))
+			return (NULL);
+	}
+	else if (!(new_nod->path = strdup(".")))
+		return (NULL);
+	if (!(new_nod->filedata = ft_memalloc(sizeof(struct dirent))))
+		return (NULL);
+	ft_memcpy(new_nod->filedata, filedata, sizeof(struct dirent));
+	new_nod->next = NULL;
+	return (new_nod);
+}
+
+int		ft_parsing_dir(char **tab_dir, t_options option, t_flist **dir_list)
+{
+	struct dirent	*filedata;
+	t_flist			*file_list;
+	t_flist			*new_nod;
+	uint8_t			type;
+
+	file_list = NULL;
+	while (*(++tab_dir))
+	{
+		ft_verif_slash(*tab_dir);
+		if (!(type = ft_gettype(*tab_dir, &filedata)))
+			continue ;
+		if (!(new_nod = ft_create_new_nod(*tab_dir, filedata)))
+			return (0);
+		if (type != DT_DIR)
+			ft_sortins(new_nod, &file_list, option);
+		else if ((type))
+			ft_sortins(new_nod, dir_list, option);
+	}
+	type = ((file_list)) ? 2 : (*dir_list && (*dir_list)->next);
+	ft_parsing_display(file_list, option);
+	return (type);
+}
+
+int		dir_management(char *dir_name, t_options options, int flag)
+{
+	t_flist	*dir_list;
 
 	dir_list = NULL;
 	if (!(dir_list = ft_read_stock_dir(dir_name, options)))

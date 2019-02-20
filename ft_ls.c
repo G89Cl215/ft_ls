@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/09 19:08:33 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/17 02:09:17 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/02/20 22:07:57 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@
 int	main(int argc, char **argv)
 {
 	t_options	options;
-	t_list		*parsing_list;
-	t_list		*tmp;
+	t_flist		*parsing_list;
+	t_flist		*tmp;
+//	char		*dir_name;
 	int			flag;
 
 	flag = 0;
@@ -35,10 +36,11 @@ int	main(int argc, char **argv)
 	while (parsing_list)
 	{
 		tmp = parsing_list;
-		dir_management(((struct dirent*)(tmp->content))->d_name, options, flag);
+		dir_management(tmp->path, options, flag);
 		parsing_list = parsing_list->next;
 		flag++;
-		free(tmp->content);
+		free(tmp->filedata);
+		free(tmp->path);
 		free(tmp);
 	}
 	return (0);
