@@ -6,12 +6,12 @@
 #    By: baavril <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/16 10:37:50 by baavril           #+#    #+#              #
-#    Updated: 2019/02/14 08:45:17 by tgouedar         ###   ########.fr        #
+#    Updated: 2019/03/03 16:30:30 by tgouedar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC			=	gcc
-CFLAGS		=	-Wall -Werror -Wextra
+CFLAGS		=	-g3 -Wall -Werror -Wextra
 
 NAME		=	ft_ls
 
@@ -22,9 +22,16 @@ DIR_O		=   temporary
 
 SRC_PATH	=	.
 SOURCES 	=	ft_ls.c \
-				options_management.c \
+				recursive_call.c \
+				get_padding_size.c \
 				parsing.c \
-				read_and_stock_ls.c
+				display.c \
+				extract_data.c \
+				ft_long_display.c \
+				read_and_stock_ls.c \
+				crisis_room.c \
+				list_tools.c \
+				sort.c \
 
 SRCS    	=   $(addprefix $(SRC_PATH)/,$(SOURCES))
 OBJS    	=   $(addprefix $(DIR_O)/,$(SOURCES:.c=.o))

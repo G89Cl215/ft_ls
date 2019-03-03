@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/09 19:08:33 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/20 22:07:57 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/02 20:33:14 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,23 @@ int	main(int argc, char **argv)
 	t_options	options;
 	t_flist		*parsing_list;
 	t_flist		*tmp;
-//	char		*dir_name;
+	//	char		*dir_name;
 	int			flag;
 
+	(void)argc;
 	flag = 0;
 	parsing_list = NULL;
-	ft_option(argc, argv, &options);
+	ft_option(&argv, &options);
 	if (!(flag = ft_parsing_dir(argv, options, &parsing_list))
 	&& !(parsing_list))
 		return (dir_management(".", options, 0));
-	while (parsing_list)
+	tmp = parsing_list;
+	while (tmp)
 	{
-		tmp = parsing_list;
 		dir_management(tmp->path, options, flag);
-		parsing_list = parsing_list->next;
+		tmp = tmp->next;
 		flag++;
-		free(tmp->filedata);
-		free(tmp->path);
-		free(tmp);
 	}
+	ft_free_t_flist(&parsing_list);
 	return (0);
 }

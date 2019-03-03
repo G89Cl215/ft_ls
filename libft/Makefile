@@ -6,7 +6,7 @@
 #    By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/05 22:11:12 by tgouedar          #+#    #+#              #
-#    Updated: 2019/02/16 21:46:15 by tgouedar         ###   ########.fr        #
+#    Updated: 2019/02/26 15:29:59 by baavril          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -94,6 +94,36 @@ SRCFILE	= ft_swap.c\
 		  option.c\
 		  match.c
 
+FTPRINTF = conv_char_printf.c\
+			conv_float1_printf.c\
+			conv_float2_printf.c\
+			conv_int_printf.c\
+			conv_ubase_printf.c\
+			conv_unicode_printf.c\
+			crisis_room.c\
+			display_result.c\
+			extract_from_pattern.c\
+			float_conv_tools.c\
+			ft_printf.c\
+			gestion_t_pattern.c\
+			padding_flags.c\
+			padding_floats.c\
+			padding_negativ.c\
+			padding_positiv.c\
+			padding_positiv2.c\
+			padding_prec.c\
+			padding_prefix.c\
+			padding_prefix2.c\
+			padding_spaces.c\
+			padding_types.c\
+			padding_zero.c\
+			padding_zero2.c\
+			parsing_conv.c\
+			parsing_extract_pattern.c\
+			parsing_pattern_detect.c\
+			parsing_pos1.c\
+			parsing_pos2.c
+
 SRCDIR	= ./
 SRC		= $(addprefix $(SRCDIR),$(SRCFILE))
 HDR 	= .
@@ -101,15 +131,21 @@ OBJFILE	= $(SRCFILE:.c=.o)
 OBJDIR	= obj
 OBJ		= $(addprefix $(OBJDIR)/,$(OBJFILE))
 
+FTPRINTFPATH	=	./ft_printf/
+FTPRINTF_C		=	$(addprefix $(FTPRINTFPATH),$(FTPRINTF))
+FTPRINTF_O		=	$(FTPRINTF:.c=.o)
+FTPRINTF_DEP	=	$(addprefix $(FTPRINTFPATH), $(FTPRINTF_O))
+
 NAME 	= libft.a
 
 all : $(NAME)
 
-$(NAME) : $(OBJ)
-	ar rc $(NAME) $(OBJ)
+$(NAME) : $(OBJ) $(FTPRINTF_DEP)
+	ar rc $(NAME) $(OBJ) $(FTPRINTF_DEP)
 
 $(OBJDIR)/%.o : %.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -o $@ -c $^ -I $(HDR)
+
 
 $(OBJDIR) :
 	/bin/mkdir $(OBJDIR)

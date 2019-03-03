@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 12:23:17 by baavril           #+#    #+#             */
-/*   Updated: 2019/02/20 22:41:48 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/03 14:18:19 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "ft_ls.h"
 #include "libft/libft.h"
 
-uint8_t	ft_gettype(char *to_parse, struct dirent **filedata)
+uint8_t	ft_gettype(char *to_parse, struct dirent **filedata, uint8_t flag)
 {
 	char			*path;
 	char			*file_name;
@@ -38,28 +38,42 @@ uint8_t	ft_gettype(char *to_parse, struct dirent **filedata)
 		path = (*to_parse) ? to_parse : "/";
 	}
 	if (!(dirhandle = opendir(path)))
+	{
+		ft_file_not_found(path, file_name);
 		return (0);
+	}
 	while ((*filedata = readdir(dirhandle)))
 	{
 		if (!(ft_strcmp(file_name, (*filedata)->d_name)))
 		{
-			closedir(dirhandle);
-			if ((*filedata)->d_type == DT_DIR && file_name != to_parse)
+			if ((*filedata)->d_type == DT_LNK && !(flag))
+				ft_memmove(to_parse, path, ft_strlen(path) + 1);
+			else if (((*filedata)->d_type == DT_DIR
+			|| (*filedata)->d_type == DT_LNK) && file_name != to_parse)
 				*(--file_name) = '/';
+		//	ft_putendl(file_name);
+		//	ft_putendl(to_parse);
+			closedir(dirhandle);
 			return ((*filedata)->d_type);
 		}
 	}
-	closedir(dirhandle); //ici : gestion plus fine des erreurs, sinon on affiche le dossier courant :/
+	closedir(dirhandle);
+	ft_file_not_found(path, file_name);
 	return (0);
 }
 
-void	ft_verif_slash(char *dir_name)
+int		ft_verif_slash(char *dir_name)
+
 {
 	int		len;
 
-	len = ft_strlen(dir_name) - 1;
-	if (dir_name[len] == '/')
+	if ((len = ft_strlen(dir_name) - 1)
+	&& dir_name[len] == '/')
+	{
 		dir_name[len] = '\0';
+		return (1);
+	}
+	return (0);
 }
 
 void	ft_parsing_display(t_flist *file_list, t_options option)
@@ -76,24 +90,16 @@ void	ft_parsing_display(t_flist *file_list, t_options option)
 		free(tmp);
 	}
 }
-t_flist		*ft_create_new_nod(char *path, struct dirent *filedata)
-{
-	t_flist	*new_nod;
 
-	if (!(new_nod = (t_flist*)malloc(sizeof(t_flist))))
-		return (NULL);
-	if (filedata->d_type == DT_DIR || ft_strcmp(path, filedata->d_name))
-	{
-		if (!(new_nod->path = strdup(path)))
-			return (NULL);
-	}
-	else if (!(new_nod->path = strdup(".")))
-		return (NULL);
-	if (!(new_nod->filedata = ft_memalloc(sizeof(struct dirent))))
-		return (NULL);
-	ft_memcpy(new_nod->filedata, filedata, sizeof(struct dirent));
-	new_nod->next = NULL;
-	return (new_nod);
+void		ft_get_root(uint8_t *type, struct dirent **filedata)
+{
+	DIR				*dirhandle;
+
+	if (!(dirhandle = opendir("/")))
+		return ;
+	*filedata = readdir(dirhandle);
+	*type = DT_DIR;
+	closedir(dirhandle);
 }
 
 int		ft_parsing_dir(char **tab_dir, t_options option, t_flist **dir_list)
@@ -102,36 +108,29 @@ int		ft_parsing_dir(char **tab_dir, t_options option, t_flist **dir_list)
 	t_flist			*file_list;
 	t_flist			*new_nod;
 	uint8_t			type;
+	uint8_t			flag;
 
 	file_list = NULL;
-	while (*(++tab_dir))
+	while (*tab_dir)
 	{
-		ft_verif_slash(*tab_dir);
-		if (!(type = ft_gettype(*tab_dir, &filedata)))
+		flag = ft_verif_slash(*tab_dir);
+		if (!(ft_strcmp("/", *tab_dir)))
+			ft_get_root(&type, &filedata);
+		else if (!(type = ft_gettype(*tab_dir, &filedata, ((flag) || !(option.l)))))
+		{
+			tab_dir++;
 			continue ;
-		if (!(new_nod = ft_create_new_nod(*tab_dir, filedata)))
+		}
+		if (!(new_nod = ft_create_new_nod(*(tab_dir++), filedata, flag)))
 			return (0);
-		if (type != DT_DIR)
-			ft_sortins(new_nod, &file_list, option);
-		else if ((type))
+		if ((type == DT_DIR) || (type == DT_LNK && (flag == 1 || !(option.l))))
 			ft_sortins(new_nod, dir_list, option);
+		else
+			ft_sortins(new_nod, &file_list, option);
+//		ft_printf("parsing : %s, flag: %d\n", new_nod->path, flag);
 	}
 	type = ((file_list)) ? 2 : (*dir_list && (*dir_list)->next);
 	ft_parsing_display(file_list, option);
+//	ft_printf("%d\n", type);
 	return (type);
-}
-
-int		dir_management(char *dir_name, t_options options, int flag)
-{
-	t_flist	*dir_list;
-
-	dir_list = NULL;
-	if (!(dir_list = ft_read_stock_dir(dir_name, options)))
-		return (0);
-	if (flag == 1)
-		printf("%s:\n", dir_name);
-	else if (flag)
-		printf("\n%s:\n", dir_name);
-	ft_current(&dir_list, dir_name, options);
-	return (1);
 }
