@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 12:23:17 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/03 14:18:19 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/04 20:52:49 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,20 @@ int		ft_verif_slash(char *dir_name)
 
 void	ft_parsing_display(t_flist *file_list, t_options option)
 {
-	t_flist	*tmp;
+	t_flist			*tmp;
+	struct stat 	sb;
 
+	while ((!(option.r) && !(option.t)) && file_list->prev)
+	{
+		ft_putendl("back");
+		file_list = file_list->prev;
+	}
+	tmp = file_list;
+	if (((option.l) || (option.n) || (option.g) || (option.o)) && (tmp))
+	{
+		ft_update_padding(tmp, option, &sb);
+		tmp = tmp->next;
+	}
 	while (file_list)
 	{
 		tmp = file_list;
@@ -129,6 +141,8 @@ int		ft_parsing_dir(char **tab_dir, t_options option, t_flist **dir_list)
 			ft_sortins(new_nod, &file_list, option);
 //		ft_printf("parsing : %s, flag: %d\n", new_nod->path, flag);
 	}
+	while ((!(option.r) && !(option.t)) && (*dir_list->prev)
+			dir_list = dir_list->prev;
 	type = ((file_list)) ? 2 : (*dir_list && (*dir_list)->next);
 	ft_parsing_display(file_list, option);
 //	ft_printf("%d\n", type);
