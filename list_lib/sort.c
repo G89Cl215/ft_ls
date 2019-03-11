@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/03 16:25:19 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/11 19:52:54 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/11 16:12:42 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,46 +22,70 @@
 
 void		ft_sortrev_ascii(t_Rlist **lst_start, t_Rlist *to_sort)
 {
+	char	*name_sort;
+	char	*name_cur;
 	t_Rlist	*voyager;
 
 	voyager = *lst_start;
-	if (ft_strcmp((voyager->filedata)->d_name, (to_sort->filedata)->d_name) < 0)
+	name_cur = ft_get_file(voyager);
+	name_sort = ft_get_file(to_sort);
+	if (ft_strcmp(name_cur, name_sort) < 0)
 	{
 		*lst_start = to_sort;
 		to_sort->next = voyager;
+		free(name_sort);
+		free(name_cur);
 		return ;
 	}
+	free(name_cur);
 	while (voyager->next)
 	{
-		if (ft_strcmp((voyager->filedata)->d_name, 
-						(to_sort->filedata)->d_name) > 0)
+		name_cur = ft_get_file(voyager->next);
+		if (ft_strcmp(name_cur, name_sort) > 0)
 			voyager = voyager->next;
 		else
+		{
+			free(name_cur);
 			break ;
+		}
+		free(name_cur);
 	}
+	free(name_sort);
 	ft_relink(voyager, to_sort);
 }
 
 void		ft_sortins_ascii(t_Rlist **lst_bot, t_Rlist *to_sort)
 {
+	char	*name_sort;
+	char	*name_cur;
 	t_Rlist	*voyager;
 
 	voyager = *lst_bot;
-	if (ft_strcmp((voyager->filedata)->d_name, (to_sort->filedata)->d_name) < 0)
+	name_cur = ft_get_file(voyager);
+	name_sort = ft_get_file(to_sort);
+	if (ft_strcmp(name_cur, name_sort) < 0)
 	{
 		*lst_bot = to_sort;
 		to_sort->prev = voyager;
 		voyager->next = to_sort;
+		free(name_sort);
+		free(name_cur);
 		return ;
 	}
+	free(name_cur);
 	while (voyager->prev)
 	{
-		if (ft_strcmp(((voyager->prev)->filedata)->d_name, 
-						(to_sort->filedata)->d_name) > 0)
+		name_cur = ft_get_file(voyager);
+		if (ft_strcmp(name_cur, name_sort) > 0)
 			voyager = voyager->prev;
 		else
+		{
+			free(name_cur);
 			break ;
+		}
+		free(name_cur);
 	}
+	free(name_sort);
 	ft_revrelink(voyager, to_sort);
 }
 

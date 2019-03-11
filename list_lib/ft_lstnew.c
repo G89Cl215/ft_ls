@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   crisis_room.c                                      :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/02/26 16:31:39 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/03 14:15:31 by tgouedar         ###   ########.fr       */
+/*   Created: 2018/11/07 13:33:48 by baavril           #+#    #+#             */
+/*   Updated: 2019/03/11 18:56:22 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <time.h>
-#include <stdio.h>
-#include <dirent.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include "ls_list.h"
+#include "../libft/libft.h"
 #include <stdlib.h>
-#include "libft/libft.h"
-#include "libft/option.h"
-#include "ft_ls.h"
 
-void	ft_file_not_found(char *path, char *file_name)
+t_flist		*ft_flistnew(char const *file_name)
 {
-	if (ft_strcmp(".", path))
-		printf("ft_ls: %s/%s: No such file or directory\n", path, file_name);
-	else
-		printf("ft_ls: %s: No such file or directory\n", file_name);
+	t_flist *new;
+
+	if (!(new = (t_flist*)malloc(sizeof(*new))))
+		return (NULL);
+	if (file_name == NULL)
+		new->file_name = NULL;
+	else if (!(new->file_name = ft_strdup(file_name)))
+		return (NULL);
+	new->next = NULL;
+	return (new);
 }

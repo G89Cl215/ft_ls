@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/09 19:08:33 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/02 20:33:14 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/11 19:00:38 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ int	main(int argc, char **argv)
 	t_options	options;
 	t_flist		*parsing_list;
 	t_flist		*tmp;
-	//	char		*dir_name;
 	int			flag;
 
 	(void)argc;
@@ -37,10 +36,10 @@ int	main(int argc, char **argv)
 	tmp = parsing_list;
 	while (tmp)
 	{
-		dir_management(tmp->path, options, flag);
+		dir_management(tmp->file_name, options, flag);
 		tmp = tmp->next;
 		flag++;
 	}
-	ft_free_t_flist(&parsing_list);
-	return (0);
+	ft_flistfree(&parsing_list);
+	return (0); // est la le veritable retour de ls ?
 }

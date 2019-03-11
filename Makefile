@@ -6,7 +6,7 @@
 #    By: baavril <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/16 10:37:50 by baavril           #+#    #+#              #
-#    Updated: 2019/03/03 16:30:30 by tgouedar         ###   ########.fr        #
+#    Updated: 2019/03/11 17:59:29 by tgouedar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,12 @@ CFLAGS		=	-g3 -Wall -Werror -Wextra
 NAME		=	ft_ls
 
 LIB_PATH	=	libft
-LIB			=	$(LIB_PATH)/libft.a
+LIB			=	libft.a
+
+LIB_LIST_PTH=	list_lib
+LIB_LIST	=	list_lib.a
+
+LIBS 		=	 $(LIB_LIST_PTH)/$(LIB_LIST) $(LIB_PATH)/$(LIB)
 
 DIR_O		=   temporary
 
@@ -29,8 +34,6 @@ SOURCES 	=	ft_ls.c \
 				extract_data.c \
 				ft_long_display.c \
 				read_and_stock_ls.c \
-				crisis_room.c \
-				list_tools.c \
 				sort.c \
 
 SRCS    	=   $(addprefix $(SRC_PATH)/,$(SOURCES))
@@ -49,8 +52,11 @@ all     :   $(NAME)
 $(LIB)  :
 	@make -C $(LIB_PATH)
 
-$(NAME) : $(LIB) $(OBJS) $(HDR) Makefile
-	$(CC) $(CFLAGS) $(OBJS) $(LIB) -o $(NAME)
+$(LIB_LIST)  :
+	@make -C $(LIB_LIST_PTH)
+
+$(NAME) : $(LIB) $(LIB_LIST) $(OBJS) $(HDR) Makefile
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
 	@echo "ft_ls has been successfully created."
 
 $(DIR_O)/%.o: $(SRC_PATH)/%.c
@@ -61,10 +67,11 @@ clean   :
 	@$(RM) $(OBJS)
 	@rm -rf $(DIR_O)
 	@make clean -C $(LIB_PATH)
+	@make clean -C $(LIB_LIST_PTH)
 	@echo "All .o files have been deleted."
 
 fclean  :   clean
-	@$(RM) $(NAME) $(LIB)
+	@$(RM) $(NAME) $(LIBS)
 	@echo "ft_ls and libft.a have been deleted."
 
 re      :   fclean all

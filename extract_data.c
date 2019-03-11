@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/18 20:43:32 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/03 00:35:13 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/11 19:00:25 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,43 +17,17 @@
 #include <stdlib.h>
 #include "libft/libft.h"
 #include "ft_ls.h"
-/*
-uint8_t	ft_link(char *path, struct dirent **filedata, int flag)
-{
-	
-}
-*/
 
-char	*ft_reconstruct_path(t_flist *voyager, int flag)
+void	ft_get_file_stat(char *file_name, struct stat *file_stat)
 {
-	char			*file;
-	size_t			len_dir;
-
-	len_dir = 0;
-	if (ft_strcmp("/", voyager->path) && ft_strcmp(".", voyager->path))
-		len_dir += ft_strlen(voyager->path);
-	len_dir += ft_strlen((voyager->filedata)->d_name);
-	if (((flag) && !(file = (char*)malloc(len_dir + 2 + voyager->flag)))
-	|| !(file = (char*)malloc(len_dir + 2)))
-		return (NULL);
-	file[0] = '\0';
-	if (ft_strcmp("/", voyager->path) && ft_strcmp(".", voyager->path))
+	if (lstat(file_name, file_stat) == -1)
 	{
-//		ft_putendl("yeeeeeeee");
-//		ft_putendl(voyager->path);
-		ft_strcat(file, voyager->path);
+		perror("stat");
+		exit(EXIT_SUCCESS);
 	}
-	if (ft_strcmp(".", voyager->path))
-		ft_strcat(file, "/\0");
-	ft_strcat(file, (voyager->filedata)->d_name);
-	if (flag && voyager->flag)
-		ft_strcat(file, "/\0");
-	else
-		file[len_dir + 2] = '\0';
-	return (file);
 }
 
-void	ft_get_stats(t_flist *voyager, struct stat *file_stat)
+void	ft_get_stats(t_Rlist *voyager, struct stat *file_stat)
 {
 	char			*file;
 

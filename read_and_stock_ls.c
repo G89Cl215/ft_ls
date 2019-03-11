@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 11:27:06 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/03 18:08:45 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/11 17:59:15 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@
 #include "libft/option.h"
 #include "ft_ls.h"
 
-t_flist		*ft_read_stock_dir(char *dir_name, t_options option)
+t_Rlist		*ft_read_stock_dir(char *dir_name, t_options option)
 {
-	t_flist			*dir_list;
-	t_flist			*to_sort;
+	t_Rlist			*dir_list;
+	t_Rlist			*to_sort;
 	DIR				*dirhandle;
 	struct dirent	*filedata;
 
@@ -34,7 +34,7 @@ t_flist		*ft_read_stock_dir(char *dir_name, t_options option)
 		return (NULL);
 	while ((filedata = readdir(dirhandle)))
 	{
-		if (!(to_sort = ft_create_new_nod(dir_name, filedata, 0)))
+		if (!(to_sort = ft_newdir_nod(dir_name, filedata)))
 		{
 			closedir(dirhandle);
 			return (NULL);

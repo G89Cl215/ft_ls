@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/20 00:57:02 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/03 12:58:06 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/11 19:00:28 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 
 extern t_padlen g_padlen; 
 
-static char		get_file_acl(t_flist *voyager)
+static char		get_file_acl(t_Rlist *voyager)
 {
 	acl_t	tmp;
 	char	buf[1000];
@@ -91,7 +91,7 @@ char			ft_get_file_type(struct stat *sb)
 	return ('-');
 }
 
-void				ft_get_chmod(struct stat *sb, char *buf, t_flist *voyager)
+void				ft_get_chmod(struct stat *sb, char *buf, t_Rlist *voyager)
 {
 	buf[0] = ft_get_file_type(sb);
 	buf[1] = (sb->st_mode & S_IRUSR) ? 'r' : '-';

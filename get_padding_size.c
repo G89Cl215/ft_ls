@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 16:35:28 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/03 14:35:29 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/11 20:16:11 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,16 @@ static void		ft_get_size_ofsize(struct stat *sb)
 	if (!(sb->st_mode & S_IFCHR) || !(sb->st_mode & S_IFBLK))
 	{
 		if (integer_len(sb->st_size) > g_padlen.size)
-			g_padlen.size = integer_len(sb->st_size); 
+			g_padlen.size = integer_len(sb->st_size);
 	}
 	else
 	{
-		if (integer_len(major(sb->st_rdev)) + 1 > g_padlen.size_maj)
-			g_padlen.size_maj = integer_len(major(sb->st_rdev)) + 1;
-		if (integer_len(minor(sb->st_rdev)) + 2 > g_padlen.size_min)
-			g_padlen.size_min = integer_len(minor(sb->st_rdev)) + 2; 
-
+		if (integer_len(major(sb->st_rdev)) > g_padlen.size_maj)
+			g_padlen.size_maj = integer_len(major(sb->st_rdev));
+		if (integer_len(minor(sb->st_rdev)) > g_padlen.size_min)
+			g_padlen.size_min = integer_len(minor(sb->st_rdev)); 
+		if (g_padlen.size_min + g_padlen.size_maj + 2 > g_padlen.size)
+			g_padlen.size = g_padlen.size_min + g_padlen.size_maj + 2;
 	}
 }
 
@@ -99,9 +100,8 @@ static void		ft_get_size_link(struct stat *sb)
 		g_padlen.nlink = integer_len(sb->st_nlink) + 1;
 }
 
-void			ft_update_padding(t_flist *voyager, t_options option, struct stat *sb)
+void			ft_update_padding(t_options option, struct stat *sb)
 {
-		ft_get_stats(voyager, sb);
 		ft_get_size_link(sb);
 		ft_get_size_pwname(sb, option);
 		ft_get_size_group_name(sb, option);

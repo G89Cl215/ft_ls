@@ -6,21 +6,22 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/04 11:43:46 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/03 16:48:26 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/11 20:22:30 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_LS_H
 # define FT_LS_H
 
-#include <dirent.h>
-#include <stdio.h>
-#include <time.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include "ft_ls.h"
-#include "libft/libft.h"
+# include <dirent.h>
+# include <stdio.h>
+# include <time.h>
+# include <stdlib.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include "ft_ls.h"
+# include "list_lib/ls_list.h"
+# include "libft/option.h"
 
 /*
 ** I. The options that we have to do.
@@ -62,15 +63,6 @@
 #define MONTHS_LIMIT_INF -15811200
 #define MONTHS_LIMIT_SUP 15811200
 
-typedef struct		s_chained_file
-{
-	struct dirent			*filedata;
-	char					*path;
-	int						flag;
-	struct s_chained_file	*prev;
-	struct s_chained_file	*next;
-}					t_flist;
-
 typedef struct		s_padlen
 {
 	int		nlink;
@@ -83,35 +75,28 @@ typedef struct		s_padlen
 
 extern	t_padlen	g_padlen;
 
-t_flist		*ft_read_stock_dir(char *dir_name, t_options option);
-t_flist		*ft_stock_dir(struct dirent *dp, DIR *dir, t_flist *buff_list);
-void		ft_sortins(t_flist *new_nod, t_flist **dir_list, t_options option);
-void		ft_sortins_time(t_flist **lst_start, t_flist *to_sort, int flag);
-void		ft_sortins_ascii(t_flist **lst_start, t_flist *to_sort);
-int			ft_current(t_flist **dir_list, char *dir_name, t_options option);
+t_Rlist		*ft_read_stock_dir(char *dir_name, t_options option);
+t_Rlist		*ft_stock_dir(struct dirent *dp, DIR *dir, t_Rlist *buff_list);
+void		ft_sortins(t_Rlist *new_nod, t_Rlist **dir_list, t_options option);
+int			ft_current(t_Rlist **dir_list, char *dir_name, t_options option);
 int			ft_parsing_dir(char **av, t_options option, t_flist **dir_list);
 int			dir_management(char *to_print, t_options options, int flag);
-int			ft_central_opt_management(t_flist *dir_list, t_options options);
-char		*ft_reconstruct_path(t_flist *voyager, int flag);
-void		ft_display_file(t_flist *voyager, t_options option);
-void		ft_longdisplay(t_flist *voyager, t_options option);
+int			ft_central_opt_management(t_Rlist *dir_list, t_options options);
+char		*ft_reconstruct_path(t_Rlist *voyager, int flag);
+void		ft_display_file(t_Rlist *voyager, t_options option);
+void		ft_longdisplay(t_Rlist *voyager, t_options option);
 int			ft_print_new_dir(char *dir_name, char *next_dir, t_options option);
 
-void		ft_get_stats(t_flist *voyager,  struct stat *file_stat);
-void		ft_get_chmod(struct stat *sb, char *buf, t_flist *voyager);
+void		ft_get_stats(t_Rlist *voyager, struct stat *file_stat);
+void		ft_get_file_stat(char *file_name, struct stat *sb);
+void		ft_get_chmod(struct stat *sb, char *buf, t_Rlist *voyager);
 char		ft_get_file_type(struct stat *sb);
 void		ft_get_passwd(struct stat *sb, t_options option);
 void		ft_get_group_name(struct stat *sb, t_options option);
+void		ft_clock(struct stat *sb);
 
-void		ft_update_padding(t_flist *voyager, t_options option, struct stat *sb);
+void		ft_update_padding(t_options option, struct stat *sb);
 
-char		*ft_get_file(t_flist *voyager);
-
-t_flist		*ft_create_new_nod(char *path, struct dirent *filedata, int flag);
-void		ft_relink(t_flist *voyager, t_flist *new_nod);
-void		ft_revrelink(t_flist *voyager, t_flist *new_nod);
-int			ft_free_t_flist(t_flist **lst);
-
-void		ft_file_not_found(char *path, char *file_name);
+char		*ft_get_file(t_Rlist *voyager);
 
 #endif

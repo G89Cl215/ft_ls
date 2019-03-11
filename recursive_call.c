@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 15:00:24 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/03 15:08:41 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/11 20:09:39 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	ft_reset(t_padlen *padlen)
 
 int		dir_management(char *dir_name, t_options options, int flag)
 {
-	t_flist	*dir_list;
+	t_Rlist	*dir_list;
 
 	dir_list = NULL;
 	if (!(dir_list = ft_read_stock_dir(dir_name, options)))
@@ -45,7 +45,7 @@ int		dir_management(char *dir_name, t_options options, int flag)
 		ft_printf("%s:\n", dir_name);
 	else if (flag)
 		ft_printf("\n%s:\n", dir_name);
-	t_flist *copy = dir_list;
+	t_Rlist *copy = dir_list;
 //	int i = 0;
 	while (copy)
 	{
@@ -56,7 +56,7 @@ int		dir_management(char *dir_name, t_options options, int flag)
 	return (1);
 }
 
-void	ft_option_F(t_flist *voyager, struct stat *sb)
+void	ft_option_F(t_Rlist *voyager, struct stat *sb)
 {
 	if (voyager->filedata)
 	{
@@ -92,9 +92,9 @@ int		ft_print_new_dir(char *dir_name, char *next_dir, t_options option)
 	return (1);
 }
 
-void	ft_current2(t_flist **dir_list, char *dir_name, t_options option)
+void	ft_current2(t_Rlist **dir_list, char *dir_name, t_options option)
 {
-	t_flist *voyager;
+	t_Rlist *voyager;
 
 	voyager = *dir_list;
 	while (voyager)
@@ -119,9 +119,9 @@ void	ft_current2(t_flist **dir_list, char *dir_name, t_options option)
 	}
 }
 
-int		ft_current(t_flist **dir_list, char *dir_name, t_options option)
+int		ft_current(t_Rlist **dir_list, char *dir_name, t_options option)
 {
-	t_flist			*voyager;
+	t_Rlist			*voyager;
 	struct stat		sb;
 	off_t			len_oct;
 
@@ -132,9 +132,8 @@ int		ft_current(t_flist **dir_list, char *dir_name, t_options option)
 	{
 		while (voyager)
 		{
-			ft_get_stats(voyager, &sb);
-			
-			ft_update_padding(voyager, option, &sb);
+			ft_get_stats(voyager, &sb);	
+			ft_update_padding(option, &sb);
 			if ((option.a) || *((voyager->filedata)->d_name) != '.')
 				len_oct += sb.st_blocks;
 			voyager = voyager->next;
@@ -142,6 +141,6 @@ int		ft_current(t_flist **dir_list, char *dir_name, t_options option)
 		ft_printf("total %lld\n", len_oct);
 	}
 	ft_current2(dir_list, dir_name, option);
-	ft_free_t_flist(dir_list);
+	ft_free_t_Rlist(dir_list);
 	return (1);
 }

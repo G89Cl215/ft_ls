@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/19 23:36:00 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/03 15:08:39 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/11 19:00:16 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,12 @@
 #include <sys/stat.h>
 #include "ft_ls.h"
 #include "libft/libft.h"
+#include "list_lib/ls_list.h"
 
 t_padlen	g_padlen = {.nlink = 0, .pwname = 0,
 	.grname = 0, .size = 0, .size_min = 0, .size_maj = 0}; 
 
-char	*ft_get_file(t_flist *voyager)
+char	*ft_get_file(t_Rlist *voyager)
 {
 	char			*file;
 	size_t			len_dir;
@@ -43,7 +44,7 @@ char	*ft_get_file(t_flist *voyager)
 	return (file);
 }
 
-void	ft_get_symblink(t_flist	*voyager, struct stat *sb)
+static void	ft_get_symblink(t_Rlist	*voyager, struct stat *sb)
 {
 	char		*buf;
 	char		*file;
@@ -67,23 +68,16 @@ void	ft_get_symblink(t_flist	*voyager, struct stat *sb)
 	free(file);
 }
 
-void		ft_display_file(t_flist *voyager, t_options option)
+void		ft_display_file(t_Rlist *voyager, t_options option)
 {
-	char	*file;
-
 	//ft_putendl(voyager->path);
-	if (voyager->flag)
-	{
-		ft_printf("ft_ls: %s: Not a directory\n", file = ft_reconstruct_path(voyager, 1));
-		free(file);
-	}
-	else if ((voyager->filedata)
+	if ((voyager->filedata)
 	&& ((option.a) || *((voyager->filedata))->d_name != '.'))
 		(option.l || option.n || option.o || option.g) ? ft_longdisplay(voyager, option)
 			: ft_printf("%s\n", (voyager->filedata)->d_name);/*ft_reconstruct_path(voyager, 0));*/
 }
 
-inline static void		ft_clock(struct stat *sb)
+void		ft_clock(struct stat *sb)
 {
 	time_t		diff;
 	char		*mtime_str;
@@ -110,7 +104,7 @@ inline static void		ft_clock(struct stat *sb)
 	}
 }
 
-void	ft_longdisplay(t_flist *voyager, t_options option)
+void	ft_longdisplay(t_Rlist *voyager, t_options option)
 {
 	struct stat		sb;
 	char			buf[12];
