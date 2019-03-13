@@ -1,22 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_revrelink.c                                     :+:      :+:    :+:   */
+/*   other_options.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/11 15:21:13 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/13 20:21:27 by tgouedar         ###   ########.fr       */
+/*   Created: 2019/03/13 21:42:46 by tgouedar          #+#    #+#             */
+/*   Updated: 2019/03/13 21:43:14 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ls_list.h"
-
-void		ft_revrelink(t_reclist *voyager, t_reclist *new_nod)
+void		ft_option_f(t_reclist *voyager, struct stat *sb)
 {
-	new_nod->prev = voyager->prev;
-	new_nod->next = voyager;
-	if (voyager->prev)
-		(voyager->prev)->next = new_nod;
-	voyager->prev = new_nod;
+	if (voyager->type == DT_DIR)
+		ft_strcat(voyager->file_name, "/");
+	if ((sb->st_mode & S_IFMT) == S_IFREG)
+		ft_strcat(voyager->file_name, "*");
 }

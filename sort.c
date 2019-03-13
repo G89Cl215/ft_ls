@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/03 16:25:19 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/11 19:52:54 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/13 20:50:46 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,15 @@
 #include <stdlib.h>
 #include "libft/libft.h"
 #include "libft/option.h"
+#include "list_lib/ls_list.h"
 #include "ft_ls.h"
 
-void		ft_sortrev_ascii(t_Rlist **lst_start, t_Rlist *to_sort)
+void	ft_sortrev_ascii(t_reclist **lst_start, t_reclist *to_sort)
 {
-	t_Rlist	*voyager;
+	t_reclist	*voyager;
 
 	voyager = *lst_start;
-	if (ft_strcmp((voyager->filedata)->d_name, (to_sort->filedata)->d_name) < 0)
+	if (ft_strcmp(voyager->file_name, to_sort->file_name) < 0)
 	{
 		*lst_start = to_sort;
 		to_sort->next = voyager;
@@ -33,8 +34,7 @@ void		ft_sortrev_ascii(t_Rlist **lst_start, t_Rlist *to_sort)
 	}
 	while (voyager->next)
 	{
-		if (ft_strcmp((voyager->filedata)->d_name, 
-						(to_sort->filedata)->d_name) > 0)
+		if (ft_strcmp(voyager->file_name, to_sort->file_name) > 0)
 			voyager = voyager->next;
 		else
 			break ;
@@ -42,12 +42,12 @@ void		ft_sortrev_ascii(t_Rlist **lst_start, t_Rlist *to_sort)
 	ft_relink(voyager, to_sort);
 }
 
-void		ft_sortins_ascii(t_Rlist **lst_bot, t_Rlist *to_sort)
+void	ft_sortins_ascii(t_reclist **lst_bot, t_reclist *to_sort)
 {
-	t_Rlist	*voyager;
+	t_reclist	*voyager;
 
 	voyager = *lst_bot;
-	if (ft_strcmp((voyager->filedata)->d_name, (to_sort->filedata)->d_name) < 0)
+	if (ft_strcmp(voyager->file_name, to_sort->file_name) < 0)
 	{
 		*lst_bot = to_sort;
 		to_sort->prev = voyager;
@@ -56,8 +56,7 @@ void		ft_sortins_ascii(t_Rlist **lst_bot, t_Rlist *to_sort)
 	}
 	while (voyager->prev)
 	{
-		if (ft_strcmp(((voyager->prev)->filedata)->d_name, 
-						(to_sort->filedata)->d_name) > 0)
+		if (ft_strcmp((voyager->prev)->file_name, to_sort->file_name) > 0)
 			voyager = voyager->prev;
 		else
 			break ;
@@ -65,112 +64,14 @@ void		ft_sortins_ascii(t_Rlist **lst_bot, t_Rlist *to_sort)
 	ft_revrelink(voyager, to_sort);
 }
 
-void		ft_sort_ascii_in_time(t_Rlist **voyager, t_Rlist *to_sort, int flag)
+void	ft_sortins(t_reclist *new_nod, t_reclist **dir_end, t_options option)
 {
-	struct stat		sb_sort;
-	struct stat		sb;
-
-	ft_get_stats(to_sort, &sb_sort);
-	ft_get_stats(*voyager, &sb);
-	while (((*voyager)->next)
-	&& ((sb.st_mtimespec).tv_sec == (sb_sort.st_mtimespec).tv_sec)
-	&& ((flag * ft_strcmp(((*voyager)->filedata)->d_name,
-									(to_sort->filedata)->d_name)) < 0))
-	{
-		 *voyager = (*voyager)->next;
-		ft_get_stats(*voyager, &sb);
-	}
-}
-
-void		ft_sortins_time(t_Rlist **lst_start, t_Rlist *to_sort, int flag)
-{
-	struct stat		sb_sort;
-	struct stat		sb;
-	t_Rlist			*voyager;
-
-	ft_get_stats(to_sort, &sb_sort);
-	ft_get_stats(*lst_start, &sb);
-	voyager = *lst_start;
-	if ((flag * ((sb.st_mtimespec).tv_sec - (sb_sort.st_mtimespec).tv_sec)) < 0
-	&& ((flag * ft_strcmp((voyager->filedata)->d_name,
-									(to_sort->filedata)->d_name)) > 0))
-	{
-		*lst_start = to_sort;
-		to_sort->next = voyager;
-		voyager->prev = to_sort;
-		return ;
-	}
-	while ((voyager->next)
-	&& (flag * ((sb.st_mtimespec).tv_sec - (sb_sort.st_mtimespec).tv_sec) > 0))
-	{
-		voyager = voyager->next;
-		ft_get_stats(voyager, &sb);
-	}
-	ft_sort_ascii_in_time(&voyager, to_sort, flag);
-	if (voyager == *lst_start)
-	{
-		*lst_start = to_sort;
-		to_sort->next = voyager;
-		voyager->prev = to_sort;
-		return ;
-	}
-	ft_relink(voyager->prev, to_sort);
-}
-
-
-/*void		ft_parse_sort_time(t_Rlist **lst_start, t_Rlist *to_sort, int flag)
-{
-	struct stat		sb_sort;
-	struct stat		sb;
-	t_Rlist			*voyager;
-	char			*to_sort_name;
-	char			*cmp_name;
-
-	ft_get_stats(to_sort, &sb_sort);
-	ft_get_stats(*lst_start, &sb);
-	voyager = *lst_start;
-	if ((flag * ((sb.st_mtimespec).tv_sec - (sb_sort.st_mtimespec).tv_sec)) > 0)
-	{
-		*lst_start = to_sort;
-		to_sort->next = voyager;
-		return ;
-	}
-	while (voyager->next)
-	{
-		ft_get_stats(voyager->next, &sb);
-		if ((flag * ((sb.st_mtimespec).tv_sec - (sb_sort.st_mtimespec).tv_sec)) < 0)
-			voyager = voyager->next;
-		else
-			break ;
-	}
-	to_sort_name = ft_get_file(to_sort);
-	cmp_name = ft_get_file(voyager);
-	while ((voyager->next)
-	&& ((sb.st_mtimespec).tv_sec == (sb_sort.st_mtimespec).tv_sec)
-	&& ((flag * ft_strcmp(cmp_name, to_sort_name)) > 0))
-	{
-		free(cmp_name);
-		voyager = voyager->next;
-		cmp_name = ft_get_file(voyager);
-		ft_get_stats(voyager->next, &sb);
-	}
-	to_sort->next = voyager->next;
-	voyager->next = to_sort;
-//	ft_relink(voyager, to_sort);
-	free(to_sort_name);
-	free(cmp_name);
-}*/
-
-void		ft_sortins(t_Rlist *new_nod, t_Rlist **dir_end, t_options option)
-{
-//	ft_putendl((new_nod->filedata)->d_name);
 	if (!(*dir_end))
 		*dir_end = new_nod;
+	else if ((option.t))
+		ft_reclistadd(dir_end, new_nod);
 	else if ((option.r))
-		(option.t) ? ft_sortins_time(dir_end, new_nod, -1)
-			: ft_sortrev_ascii(dir_end, new_nod);
-	else if (option.t)
-	   ft_sortins_time(dir_end, new_nod, 1);
+		ft_sortrev_ascii(dir_end, new_nod);
 	else
 	{
 		ft_sortins_ascii(dir_end, new_nod);

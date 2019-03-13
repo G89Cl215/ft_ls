@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list_tools.c                                       :+:      :+:    :+:   */
+/*   ft_newdir_nod.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/03 14:14:17 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/11 18:56:33 by tgouedar         ###   ########.fr       */
+/*   Created: 2019/03/13 17:11:28 by tgouedar          #+#    #+#             */
+/*   Updated: 2019/03/13 20:25:10 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 #include "ls_list.h"
 #include "../libft/libft.h"
 
-t_Rlist		*ft_newdir_nod(char *path, struct dirent *filedata)
+t_reclist		*ft_newdir_nod(char *path, struct dirent *filedata)
 {
-	t_Rlist	*new_nod;
+	t_reclist	*new_nod;
 
-	if (!(new_nod = (t_Rlist*)ft_memalloc(sizeof(t_Rlist))))
+	if (!(new_nod = (t_reclist*)malloc(sizeof(t_reclist))))
 		return (NULL);
 	if (filedata->d_type == DT_DIR || ft_strcmp(path, filedata->d_name))
 	{
@@ -28,9 +28,9 @@ t_Rlist		*ft_newdir_nod(char *path, struct dirent *filedata)
 	}
 	else if (!(new_nod->path = ft_strdup(".")))
 		return (NULL);
-	if (!(new_nod->filedata = ft_memalloc(sizeof(struct dirent))))
+	if (!(new_nod->file_name = ft_strdup(filedata->d_name)))
 		return (NULL);
-	ft_memcpy(new_nod->filedata, filedata, sizeof(struct dirent));
+	new_nod->type = filedata->d_type;
 	new_nod->prev = NULL;
 	new_nod->next = NULL;
 	return (new_nod);

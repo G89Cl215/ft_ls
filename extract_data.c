@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/18 20:43:32 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/11 19:00:25 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/13 20:31:18 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,12 @@ void	ft_get_file_stat(char *file_name, struct stat *file_stat)
 	}
 }
 
-void	ft_get_stats(t_Rlist *voyager, struct stat *file_stat)
+void	ft_get_stats(t_reclist *voyager, struct stat *file_stat)
 {
 	char			*file;
 
-//	ft_printf("%p ", *voyager);
-//	ft_putendl(voyager->path);
 	if (!(file = ft_get_file(voyager)))
-		return ;  // retour plus profond de l'erreur ?
-//	ft_putendl(file);
+		return ;
 	if (lstat(file, file_stat) == -1)
 	{
 		perror("stat");

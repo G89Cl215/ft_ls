@@ -6,7 +6,7 @@
 #    By: baavril <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/16 10:37:50 by baavril           #+#    #+#              #
-#    Updated: 2019/03/11 17:59:29 by tgouedar         ###   ########.fr        #
+#    Updated: 2019/03/13 21:45:53 by tgouedar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,7 @@ SOURCES 	=	ft_ls.c \
 				recursive_call.c \
 				get_padding_size.c \
 				parsing.c \
+				parse_display.c\
 				display.c \
 				extract_data.c \
 				ft_long_display.c \
@@ -56,7 +57,7 @@ $(LIB_LIST)  :
 	@make -C $(LIB_LIST_PTH)
 
 $(NAME) : $(LIB) $(LIB_LIST) $(OBJS) $(HDR) Makefile
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
 	@echo "ft_ls has been successfully created."
 
 $(DIR_O)/%.o: $(SRC_PATH)/%.c
@@ -65,13 +66,15 @@ $(DIR_O)/%.o: $(SRC_PATH)/%.c
 
 clean   :
 	@$(RM) $(OBJS)
-	@rm -rf $(DIR_O)
+	@rm -Rf $(DIR_O)
 	@make clean -C $(LIB_PATH)
 	@make clean -C $(LIB_LIST_PTH)
 	@echo "All .o files have been deleted."
 
 fclean  :   clean
-	@$(RM) $(NAME) $(LIBS)
+	@$(RM) $(NAME)
+	@make fclean -C $(LIB_PATH)
+	@make fclean -C $(LIB_LIST_PTH)
 	@echo "ft_ls and libft.a have been deleted."
 
 re      :   fclean all

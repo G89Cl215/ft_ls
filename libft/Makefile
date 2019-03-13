@@ -6,7 +6,7 @@
 #    By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/05 22:11:12 by tgouedar          #+#    #+#              #
-#    Updated: 2019/02/26 15:29:59 by baavril          ###   ########.fr        #
+#    Updated: 2019/03/13 21:38:43 by tgouedar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -75,6 +75,8 @@ SRCFILE	= ft_swap.c\
 		  ft_putchar_fd.c\
 		  ft_putstr.c\
 		  ft_putstr_fd.c\
+		  ft_putlpadstr.c\
+		  ft_putrpadstr.c\
 		  ft_putendl.c\
 		  ft_print_nods.c\
 		  ft_putendl_fd.c\
@@ -89,6 +91,7 @@ SRCFILE	= ft_swap.c\
 		  ft_lstnew.c\
 		  ft_lstmap.c\
 		  ft_lstiter.c\
+		  ft_integer_len.c\
 		  ft_lstadd_back.c\
 		  get_next_line.c\
 		  option.c\
@@ -132,26 +135,36 @@ OBJDIR	= obj
 OBJ		= $(addprefix $(OBJDIR)/,$(OBJFILE))
 
 FTPRINTFPATH	=	./ft_printf/
-FTPRINTF_C		=	$(addprefix $(FTPRINTFPATH),$(FTPRINTF))
+FTPRINTF_C		=	$(addprefix $(FTPRINTFPATH)/,$(FTPRINTF))
 FTPRINTF_O		=	$(FTPRINTF:.c=.o)
-FTPRINTF_DEP	=	$(addprefix $(FTPRINTFPATH), $(FTPRINTF_O))
+FTPRINTF_DEP	=	$(addprefix $(FTPRINTFPATH)/,$(FTPRINTF_O))
 
 NAME 	= libft.a
 
 all : $(NAME)
 
 $(NAME) : $(OBJ) $(FTPRINTF_DEP)
-	ar rc $(NAME) $(OBJ) $(FTPRINTF_DEP)
+	@ar rc $(NAME) $(OBJ) $(FTPRINTF_DEP)
+	@echo "Your LIBFT is ready for use."
 
-$(OBJDIR)/%.o : %.c | $(OBJDIR)
-	$(CC) $(CFLAGS) -o $@ -c $^ -I $(HDR)
+printf_process :
+	@echo "Compiling Printf."
 
+$(FTPRINTFPATH)/%.o : $(FTPRINTFPATH)/%.c | printf_process
+	@$(CC) $(CFLAGS) -o $@ -c $^
+
+obj_process : 
+	@echo "Compiling Objects."
+
+$(OBJDIR)/%.o : %.c | $(OBJDIR) obj_process
+	@$(CC) $(CFLAGS) -o $@ -c $^ -I $(HDR)
 
 $(OBJDIR) :
-	/bin/mkdir $(OBJDIR)
+	@/bin/mkdir $(OBJDIR)
 
 clean :
 	@/bin/rm $(OBJ) 2>/dev/null || true
+	@/bin/rm $(FTPRINTF_DEP) 2>/dev/null || true
 	@/bin/rm -R $(OBJDIR) 2>/dev/null || true
 
 fclean : clean

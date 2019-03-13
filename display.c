@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/19 23:36:00 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/11 19:00:16 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/13 20:30:58 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,27 +24,27 @@
 #include "list_lib/ls_list.h"
 
 t_padlen	g_padlen = {.nlink = 0, .pwname = 0,
-	.grname = 0, .size = 0, .size_min = 0, .size_maj = 0}; 
+	.grname = 0, .size = 0, .size_min = 0, .size_maj = 0};
 
-char	*ft_get_file(t_Rlist *voyager)
+char			*ft_get_file(t_reclist *voyager)
 {
-	char			*file;
-	size_t			len_dir;
+	char		*file;
+	size_t		len_dir;
 
 	len_dir = (ft_strcmp("/", voyager->path)) ? ft_strlen(voyager->path) : 0;
-	len_dir += ft_strlen((voyager->filedata)->d_name);
+	len_dir += ft_strlen(voyager->file_name);
 	if (!(file = (char*)malloc(len_dir + 2)))
 		return (0);
 	file[0] = '\0';
 	if (ft_strcmp("/", voyager->path))
 		ft_strcat(file, voyager->path);
 	ft_strcat(file, "/\0");
-	ft_strcat(file, (voyager->filedata)->d_name);
+	ft_strcat(file, voyager->file_name);
 	file[len_dir + 1] = '\0';
 	return (file);
 }
 
-static void	ft_get_symblink(t_Rlist	*voyager, struct stat *sb)
+static void		ft_get_symblink(t_reclist *voyager, struct stat *sb)
 {
 	char		*buf;
 	char		*file;
@@ -68,16 +68,15 @@ static void	ft_get_symblink(t_Rlist	*voyager, struct stat *sb)
 	free(file);
 }
 
-void		ft_display_file(t_Rlist *voyager, t_options option)
+void			ft_display_file(t_reclist *voyager, t_options option)
 {
-	//ft_putendl(voyager->path);
-	if ((voyager->filedata)
-	&& ((option.a) || *((voyager->filedata))->d_name != '.'))
-		(option.l || option.n || option.o || option.g) ? ft_longdisplay(voyager, option)
-			: ft_printf("%s\n", (voyager->filedata)->d_name);/*ft_reconstruct_path(voyager, 0));*/
+	if ((option.a) || *(voyager->file_name) != '.')
+		(option.l || option.n || option.o || option.g)
+			? ft_longdisplay(voyager, option)
+			: ft_putendl(voyager->file_name);
 }
 
-void		ft_clock(struct stat *sb)
+void			ft_clock(struct stat *sb)
 {
 	time_t		diff;
 	char		*mtime_str;
@@ -104,7 +103,7 @@ void		ft_clock(struct stat *sb)
 	}
 }
 
-void	ft_longdisplay(t_Rlist *voyager, t_options option)
+void			ft_longdisplay(t_reclist *voyager, t_options option)
 {
 	struct stat		sb;
 	char			buf[12];
@@ -120,10 +119,10 @@ void	ft_longdisplay(t_Rlist *voyager, t_options option)
 		ft_printf("%*lld ", g_padlen.size, sb.st_size);
 	else
 		ft_printf("%*d, %*d ", g_padlen.size_maj, major(sb.st_rdev),
-			   					g_padlen.size_min, minor(sb.st_rdev));
+				g_padlen.size_min, minor(sb.st_rdev));
 	ft_clock(&sb);
 	if (!((sb.st_mode & S_IFMT) == S_IFLNK))
-		ft_printf("%s\n", (voyager->filedata)->d_name);/*ft_reconstruct_path(voyager, 0));*/
+		ft_putendl(voyager->file_name);
 	else
 		ft_get_symblink(voyager, &sb);
 }

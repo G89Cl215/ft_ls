@@ -1,22 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_revrelink.c                                     :+:      :+:    :+:   */
+/*   ft_integer_len.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/11 15:21:13 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/13 20:21:27 by tgouedar         ###   ########.fr       */
+/*   Created: 2019/03/13 21:37:19 by tgouedar          #+#    #+#             */
+/*   Updated: 2019/03/13 21:37:39 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ls_list.h"
-
-void		ft_revrelink(t_reclist *voyager, t_reclist *new_nod)
+int				integer_len(int nbr)
 {
-	new_nod->prev = voyager->prev;
-	new_nod->next = voyager;
-	if (voyager->prev)
-		(voyager->prev)->next = new_nod;
-	voyager->prev = new_nod;
+	int l;
+
+	l = 1;
+	while (nbr /= 10)
+		++l;
+	return (l);
 }

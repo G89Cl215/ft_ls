@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/20 00:57:02 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/11 19:00:28 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/13 20:31:58 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@
 #include <sys/acl.h>
 #include <sys/xattr.h>
 
-extern t_padlen g_padlen; 
+extern t_padlen		g_padlen;
 
-static char		get_file_acl(t_Rlist *voyager)
+static char			get_file_acl(t_reclist *voyager)
 {
 	acl_t	tmp;
 	char	buf[1000];
@@ -48,7 +48,7 @@ static char		get_file_acl(t_Rlist *voyager)
 	return (' ');
 }
 
-void			ft_get_group_name(struct stat *sb, t_options option)
+void				ft_get_group_name(struct stat *sb, t_options option)
 {
 	struct group	*grp;
 
@@ -69,7 +69,7 @@ void				ft_get_passwd(struct stat *sb, t_options option)
 		ft_printf(" %-*d", g_padlen.pwname, sb->st_uid);
 }
 
-char			ft_get_file_type(struct stat *sb)
+char				ft_get_file_type(struct stat *sb)
 {
 	if (sb->st_mode & S_IFMT)
 	{
@@ -91,7 +91,7 @@ char			ft_get_file_type(struct stat *sb)
 	return ('-');
 }
 
-void				ft_get_chmod(struct stat *sb, char *buf, t_Rlist *voyager)
+void				ft_get_chmod(struct stat *sb, char *buf, t_reclist *voyager)
 {
 	buf[0] = ft_get_file_type(sb);
 	buf[1] = (sb->st_mode & S_IRUSR) ? 'r' : '-';

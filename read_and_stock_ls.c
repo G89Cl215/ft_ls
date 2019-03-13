@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 11:27:06 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/11 17:59:15 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/13 20:36:39 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,21 @@
 #include "libft/option.h"
 #include "ft_ls.h"
 
-t_Rlist		*ft_read_stock_dir(char *dir_name, t_options option)
+static void		ft_finish_stock(t_reclist **dir_list, t_options option)
 {
-	t_Rlist			*dir_list;
-	t_Rlist			*to_sort;
+	if (option.t)
+		ft_recmerge_sort(dir_list, &ft_reclist_time_cmp, option.r ? -1 : 1);
+	else if (!(option.r))
+	{
+		while ((*dir_list)->prev)
+			*dir_list = (*dir_list)->prev;
+	}
+}
+
+t_reclist		*ft_read_stock_dir(char *dir_name, t_options option)
+{
+	t_reclist		*dir_list;
+	t_reclist		*to_sort;
 	DIR				*dirhandle;
 	struct dirent	*filedata;
 
@@ -41,11 +52,7 @@ t_Rlist		*ft_read_stock_dir(char *dir_name, t_options option)
 		}
 		ft_sortins(to_sort, &dir_list, option);
 	}
-	if (!(option.r) && !(option.t))
-	{
-		while (dir_list->prev)
-			dir_list = dir_list->prev;
-	}
+	ft_finish_stock(&dir_list, option);
 	closedir(dirhandle);
 	return (dir_list);
 }

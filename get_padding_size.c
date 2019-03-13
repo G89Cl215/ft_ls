@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/21 16:35:28 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/11 20:16:11 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/13 21:37:39 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,7 @@
 #include "ft_ls.h"
 #include "libft/libft.h"
 
-extern t_padlen		g_padlen; 
-
-int				integer_len(int nbr)
-{
-	int l;
-
-	l = 1;
-	while (nbr /= 10)
-		++l;
-	return (l);
-}
+extern t_padlen		g_padlen;
 
 static void		ft_get_size_ofsize(struct stat *sb)
 {
@@ -46,7 +36,7 @@ static void		ft_get_size_ofsize(struct stat *sb)
 		if (integer_len(major(sb->st_rdev)) > g_padlen.size_maj)
 			g_padlen.size_maj = integer_len(major(sb->st_rdev));
 		if (integer_len(minor(sb->st_rdev)) > g_padlen.size_min)
-			g_padlen.size_min = integer_len(minor(sb->st_rdev)); 
+			g_padlen.size_min = integer_len(minor(sb->st_rdev));
 		if (g_padlen.size_min + g_padlen.size_maj + 2 > g_padlen.size)
 			g_padlen.size = g_padlen.size_min + g_padlen.size_maj + 2;
 	}
@@ -102,8 +92,8 @@ static void		ft_get_size_link(struct stat *sb)
 
 void			ft_update_padding(t_options option, struct stat *sb)
 {
-		ft_get_size_link(sb);
-		ft_get_size_pwname(sb, option);
-		ft_get_size_group_name(sb, option);
-		ft_get_size_ofsize(sb);
+	ft_get_size_link(sb);
+	ft_get_size_pwname(sb, option);
+	ft_get_size_group_name(sb, option);
+	ft_get_size_ofsize(sb);
 }

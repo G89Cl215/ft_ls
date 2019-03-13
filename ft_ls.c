@@ -6,7 +6,7 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/09 19:08:33 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/11 19:00:38 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/13 19:56:58 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ int	main(int argc, char **argv)
 	(void)argc;
 	flag = 0;
 	parsing_list = NULL;
-	ft_option(&argv, &options);
+	if (!(ft_option(&argv, &options)))
+		return (0);
 	if (!(flag = ft_parsing_dir(argv, options, &parsing_list))
 	&& !(parsing_list))
 		return (dir_management(".", options, 0));

@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 15:00:24 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/11 20:09:39 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/13 21:43:19 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@
 #include "ft_ls.h"
 #include "libft/libft.h"
 
-extern t_padlen		g_padlen; 
+extern t_padlen		g_padlen;
 
-void	ft_reset(t_padlen *padlen)
+void		ft_reset(t_padlen *padlen)
 {
 	padlen->nlink = 0;
 	padlen->pwname = 0;
@@ -34,9 +34,9 @@ void	ft_reset(t_padlen *padlen)
 	padlen->size_maj = 0;
 }
 
-int		dir_management(char *dir_name, t_options options, int flag)
+int			dir_management(char *dir_name, t_options options, int flag)
 {
-	t_Rlist	*dir_list;
+	t_reclist	*dir_list;
 
 	dir_list = NULL;
 	if (!(dir_list = ft_read_stock_dir(dir_name, options)))
@@ -45,31 +45,11 @@ int		dir_management(char *dir_name, t_options options, int flag)
 		ft_printf("%s:\n", dir_name);
 	else if (flag)
 		ft_printf("\n%s:\n", dir_name);
-	t_Rlist *copy = dir_list;
-//	int i = 0;
-	while (copy)
-	{
-//		ft_printf("copy%d: %s\t%p\n", i++, copy->path, copy);
-		copy = copy->next;
-	}
 	ft_current(&dir_list, dir_name, options);
 	return (1);
 }
 
-void	ft_option_F(t_Rlist *voyager, struct stat *sb)
-{
-	if (voyager->filedata)
-	{
-		if ((voyager->filedata)->d_type == DT_DIR)
-			ft_strcat((voyager->filedata)->d_name, "/");
-		if ((sb->st_mode & S_IFMT) == S_IFREG)
-			//		&& ((sb->st_mode & S_IXUSR) || (sb->st_mode & S_IXGRP)
-			//		|| (sb->st_mode & S_IXOTH) ? 'x' : '-'))
-			ft_strcat((voyager->filedata)->d_name, "*");
-	}
-}
-
-int		ft_print_new_dir(char *dir_name, char *next_dir, t_options option)
+int			ft_print_new_dir(char *dir_name, char *next_dir, t_options option)
 {
 	size_t	len_dir;
 	char	*str;
@@ -92,36 +72,34 @@ int		ft_print_new_dir(char *dir_name, char *next_dir, t_options option)
 	return (1);
 }
 
-void	ft_current2(t_Rlist **dir_list, char *dir_name, t_options option)
+void		ft_current2(t_reclist **dir_list, char *dir_name, t_options option)
 {
-	t_Rlist *voyager;
+	t_reclist		*voyager;
 
 	voyager = *dir_list;
 	while (voyager)
 	{
-		//		ft_putendl(voyager->path);
-		//		ft_putendl(voyager->filedata->d_name);
 		ft_display_file(voyager, option);
 		voyager = voyager->next;
 	}
-	if (option.R)
+	if (option.rec)
 	{
 		voyager = *dir_list;
 		while (voyager)
 		{
-			if (((voyager->filedata)->d_type == DT_DIR)
-			&& (ft_strcmp((voyager->filedata)->d_name, "."))
-			&& (ft_strcmp((voyager->filedata)->d_name, ".."))
-			&& (((option.a) || *((voyager->filedata)->d_name) != '.')))
-				ft_print_new_dir(dir_name, (voyager->filedata)->d_name, option);
+			if ((voyager->type == DT_DIR)
+			&& (ft_strcmp(voyager->file_name, "."))
+			&& (ft_strcmp(voyager->file_name, ".."))
+			&& ((option.a) || *(voyager->file_name) != '.'))
+				ft_print_new_dir(dir_name, voyager->file_name, option);
 			voyager = voyager->next;
 		}
 	}
 }
 
-int		ft_current(t_Rlist **dir_list, char *dir_name, t_options option)
+int			ft_current(t_reclist **dir_list, char *dir_name, t_options option)
 {
-	t_Rlist			*voyager;
+	t_reclist		*voyager;
 	struct stat		sb;
 	off_t			len_oct;
 
@@ -132,15 +110,15 @@ int		ft_current(t_Rlist **dir_list, char *dir_name, t_options option)
 	{
 		while (voyager)
 		{
-			ft_get_stats(voyager, &sb);	
+			ft_get_stats(voyager, &sb);
 			ft_update_padding(option, &sb);
-			if ((option.a) || *((voyager->filedata)->d_name) != '.')
+			if ((option.a) || *(voyager->file_name) != '.')
 				len_oct += sb.st_blocks;
 			voyager = voyager->next;
 		}
 		ft_printf("total %lld\n", len_oct);
 	}
 	ft_current2(dir_list, dir_name, option);
-	ft_free_t_Rlist(dir_list);
+	ft_free_t_reclist(dir_list);
 	return (1);
 }
