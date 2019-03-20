@@ -6,18 +6,17 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/09 19:08:33 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/13 19:56:58 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/19 23:32:34 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <dirent.h>
 #include <stdio.h>
-#include <time.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include "option.h"
 #include "ft_ls.h"
-#include "libft/libft.h"
+#include "libft.h"
+
+t_padlen	g_padlen = {.nlink = 0, .pwname = 0,
+	.grname = 0, .size = 0, .size_min = 0, .size_maj = 0};
 
 int	main(int argc, char **argv)
 {
@@ -30,8 +29,8 @@ int	main(int argc, char **argv)
 	flag = 0;
 	parsing_list = NULL;
 	if (!(ft_option(&argv, &options)))
-		return (0);
-	if (!(flag = ft_parsing_dir(argv, options, &parsing_list))
+		return (1);
+	if (!(flag = ft_parsing_dir(--argv, options, &parsing_list))
 	&& !(parsing_list))
 		return (dir_management(".", options, 0));
 	tmp = parsing_list;
@@ -42,5 +41,5 @@ int	main(int argc, char **argv)
 		flag++;
 	}
 	ft_flistfree(&parsing_list);
-	return (0); // est la le veritable retour de ls ?
+	return (0);
 }

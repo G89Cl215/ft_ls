@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 16:08:10 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/13 20:54:35 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/15 13:57:02 by baavril          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void						ft_revrelink(t_reclist *voyager,
 int							ft_free_t_reclist(t_reclist **lst);
 
 t_flist						*ft_flistnew(char const *content);
-void						ft_flistadd(t_flist **alst, t_flist *new_nod);
-void						ft_flistadd_back(t_flist **alst, t_flist *new_back);
+void						ft_flstadd(t_flist **alst, t_flist *new_nod);
+void						ft_flstadd_back(t_flist **alst, t_flist *new_back);
 void						ft_reclistadd(t_reclist **alst, t_reclist *new_nod);
 void						ft_flistfree(t_flist **alst);
 void						ft_flistfreeone(t_flist **alst);

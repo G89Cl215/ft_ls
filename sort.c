@@ -6,20 +6,12 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/03 16:25:19 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/13 20:50:46 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/19 23:47:27 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <time.h>
-#include <stdio.h>
-#include <dirent.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <stdlib.h>
-#include "libft/libft.h"
-#include "libft/option.h"
-#include "list_lib/ls_list.h"
 #include "ft_ls.h"
+#include "libft.h"
 
 void	ft_sortrev_ascii(t_reclist **lst_start, t_reclist *to_sort)
 {

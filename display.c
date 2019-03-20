@@ -6,25 +6,18 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/19 23:36:00 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/13 20:30:58 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/19 23:43:28 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <dirent.h>
-#include <stdio.h>
-#include <time.h>
 #include <limits.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <stdio.h>
+#include <time.h>
 #include "ft_ls.h"
-#include "libft/libft.h"
-#include "list_lib/ls_list.h"
-
-t_padlen	g_padlen = {.nlink = 0, .pwname = 0,
-	.grname = 0, .size = 0, .size_min = 0, .size_maj = 0};
+#include "libft.h"
 
 char			*ft_get_file(t_reclist *voyager)
 {
@@ -63,9 +56,10 @@ static void		ft_get_symblink(t_reclist *voyager, struct stat *sb)
 	nbytes = readlink(file, buf, bufsize);
 	free(file);
 	buf[bufsize] = '\0';
-	ft_printf("%s -> %s\n", file = ft_get_file(voyager), buf);
+	ft_putstr(voyager->file_name);
+	ft_putstr(" -> ");
+	ft_putendl(buf);
 	free(buf);
-	free(file);
 }
 
 void			ft_display_file(t_reclist *voyager, t_options option)
@@ -85,7 +79,8 @@ void			ft_clock(struct stat *sb)
 	diff = time(NULL) - sb->st_mtime;
 	ft_memmove(mtime_str, mtime_str + 4, ft_strlen(mtime_str));
 	mtime_str[6] = '\0';
-	ft_printf("%s ", mtime_str);
+	ft_strcat(mtime_str, " ");
+	ft_putstr(mtime_str);
 	mtime_str = ctime(&sb->st_mtime);
 	if ((diff < MONTHS_LIMIT_INF || diff > MONTHS_LIMIT_SUP))
 	{
@@ -93,14 +88,14 @@ void			ft_clock(struct stat *sb)
 		mtime_str[ft_strlen(mtime_str) - 1] = '\0';
 		if (mtime_str[2] == ' ')
 			ft_memmove(mtime_str, mtime_str + 4, ft_strlen(mtime_str));
-		ft_printf("%s ", mtime_str);
 	}
 	else
 	{
 		ft_memmove(mtime_str, mtime_str + 11, ft_strlen(mtime_str));
 		mtime_str[5] = '\0';
-		ft_printf("%s ", mtime_str);
 	}
+	ft_strcat(mtime_str, " ");
+	ft_putstr(mtime_str);
 }
 
 void			ft_longdisplay(t_reclist *voyager, t_options option)
@@ -110,16 +105,21 @@ void			ft_longdisplay(t_reclist *voyager, t_options option)
 
 	ft_get_stats(voyager, &sb);
 	ft_get_chmod(&sb, buf, voyager);
-	ft_printf("%*d", g_padlen.nlink, sb.st_nlink);
-	if (!(option.g))
-		ft_get_passwd(&sb, option);
+	ft_append_str(sb.st_nlink, g_padlen.nlink);
+	ft_get_passwd(&sb, option);
 	if (!(option.o))
 		ft_get_group_name(&sb, option);
+	if (((option.o) && (option.g)) || (option.n))
+		ft_putstr("  ");
 	if (buf[0] != 'c' && buf[0] != 'b')
-		ft_printf("%*lld ", g_padlen.size, sb.st_size);
+		ft_printf("%*d", g_padlen.size, sb.st_size);
 	else
-		ft_printf("%*d, %*d ", g_padlen.size_maj, major(sb.st_rdev),
-				g_padlen.size_min, minor(sb.st_rdev));
+	{
+		ft_append_str(major(sb.st_rdev), g_padlen.size_maj);
+		ft_putstr(", ");
+		ft_append_str(minor(sb.st_rdev), g_padlen.size_min);
+	}
+	ft_putchar(' ');
 	ft_clock(&sb);
 	if (!((sb.st_mode & S_IFMT) == S_IFLNK))
 		ft_putendl(voyager->file_name);

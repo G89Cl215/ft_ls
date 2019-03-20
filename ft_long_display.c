@@ -6,23 +6,18 @@
 /*   By: baavril <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/20 00:57:02 by baavril           #+#    #+#             */
-/*   Updated: 2019/03/13 20:31:58 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/20 11:14:49 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <dirent.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <time.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <pwd.h>
 #include <grp.h>
-#include "ft_ls.h"
-#include "libft/libft.h"
 #include <sys/acl.h>
 #include <sys/xattr.h>
+#include "ft_ls.h"
+#include "libft.h"
 
 extern t_padlen		g_padlen;
 
@@ -53,20 +48,30 @@ void				ft_get_group_name(struct stat *sb, t_options option)
 	struct group	*grp;
 
 	if ((grp = getgrgid(sb->st_gid)) != NULL && !(option.n))
-		((option.g)) ? ft_printf(" %-*s", g_padlen.grname, grp->gr_name)
-		: ft_printf("%-*s", g_padlen.grname, grp->gr_name);
+		ft_append_str2(grp->gr_name, g_padlen.grname);
 	else
-		ft_printf("%-*u", g_padlen.grname, sb->st_gid);
+		ft_append_str(sb->st_gid, g_padlen.grname);
 }
 
 void				ft_get_passwd(struct stat *sb, t_options option)
 {
 	struct passwd	*pwd;
+	char			*tmp;
 
-	if ((pwd = getpwuid(sb->st_uid)) != NULL && !(option.n))
-		ft_printf(" %-*s", g_padlen.pwname, pwd->pw_name);
-	else
-		ft_printf(" %-*d", g_padlen.pwname, sb->st_uid);
+	ft_putchar(' ');
+	if (!(option.g))
+	{
+		if ((pwd = getpwuid(sb->st_uid)) != NULL && !(option.n))
+			ft_append_str2(pwd->pw_name, g_padlen.pwname);
+		else if (!(option.n))
+		{
+			tmp = ft_itoa(sb->st_uid);
+			ft_append_str2(tmp, g_padlen.pwname);
+			free(tmp);
+		}
+		else
+			ft_append_str(sb->st_uid, g_padlen.pwname);
+	}
 }
 
 char				ft_get_file_type(struct stat *sb)
@@ -111,5 +116,5 @@ void				ft_get_chmod(struct stat *sb, char *buf, t_reclist *voyager)
 		buf[6] = (buf[6] == '-') ? 'S' : 's';
 	if (sb->st_mode & S_ISVTX)
 		buf[9] = (buf[9] == '-') ? 'T' : 't';
-	ft_printf("%s", buf);
+	ft_putstr(buf);
 }

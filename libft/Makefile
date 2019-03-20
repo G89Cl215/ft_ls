@@ -6,7 +6,7 @@
 #    By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/05 22:11:12 by tgouedar          #+#    #+#              #
-#    Updated: 2019/03/13 21:38:43 by tgouedar         ###   ########.fr        #
+#    Updated: 2019/03/20 00:21:20 by tgouedar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -97,7 +97,7 @@ SRCFILE	= ft_swap.c\
 		  option.c\
 		  match.c
 
-FTPRINTF = conv_char_printf.c\
+FTPRINTF =	conv_char_printf.c\
 			conv_float1_printf.c\
 			conv_float2_printf.c\
 			conv_int_printf.c\
@@ -134,30 +134,28 @@ OBJFILE	= $(SRCFILE:.c=.o)
 OBJDIR	= obj
 OBJ		= $(addprefix $(OBJDIR)/,$(OBJFILE))
 
-FTPRINTFPATH	=	./ft_printf/
+FTPRINTFPATH	=	./ft_printf
 FTPRINTF_C		=	$(addprefix $(FTPRINTFPATH)/,$(FTPRINTF))
 FTPRINTF_O		=	$(FTPRINTF:.c=.o)
 FTPRINTF_DEP	=	$(addprefix $(FTPRINTFPATH)/,$(FTPRINTF_O))
 
 NAME 	= libft.a
 
+.PHONY: all re clean fclean obj_process printf_process
+
 all : $(NAME)
 
-$(NAME) : $(OBJ) $(FTPRINTF_DEP)
+$(NAME) : $(OBJ) $(FTPRINTF_DEP) Makefile
 	@ar rc $(NAME) $(OBJ) $(FTPRINTF_DEP)
 	@echo "Your LIBFT is ready for use."
 
-printf_process :
-	@echo "Compiling Printf."
-
-$(FTPRINTFPATH)/%.o : $(FTPRINTFPATH)/%.c | printf_process
+$(FTPRINTFPATH)/%.o : $(FTPRINTFPATH)/%.c
 	@$(CC) $(CFLAGS) -o $@ -c $^
+	@echo " \t \t \t \t \t \t \t \t [OK]  \r $^  \r "
 
-obj_process : 
-	@echo "Compiling Objects."
-
-$(OBJDIR)/%.o : %.c | $(OBJDIR) obj_process
+$(OBJDIR)/%.o : %.c | $(OBJDIR)
 	@$(CC) $(CFLAGS) -o $@ -c $^ -I $(HDR)
+	@echo " \t \t \t \t \t \t \t \t [OK]  \r $^  \r "
 
 $(OBJDIR) :
 	@/bin/mkdir $(OBJDIR)

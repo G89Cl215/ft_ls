@@ -6,7 +6,7 @@
 /*   By: tgouedar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/17 16:50:56 by tgouedar          #+#    #+#             */
-/*   Updated: 2019/03/13 21:02:02 by tgouedar         ###   ########.fr       */
+/*   Updated: 2019/03/19 23:32:00 by tgouedar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define OPTION_H
 
 # include <stdbool.h>
-# define OPT "FRaglnort1"
+# define OPT "Raglnort1"
 
 typedef struct	s_options
 {
@@ -27,7 +27,6 @@ typedef struct	s_options
 	bool		e : 1;
 	bool		g : 1;
 	bool		o : 1;
-	bool		f_acl : 1;
 }				t_options;
 
 #endif
